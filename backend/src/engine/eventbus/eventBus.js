@@ -29,7 +29,11 @@ class OperationsEventBus extends EventEmitter {
         'EVIDENCE_UPLOADED': 'evidence.uploaded',
         'GPS_VERIFIED': 'verification.completed',
         'NOTIFICATION_CREATED': 'notification.created',
-        'STATUS_CHANGED': 'timeline.updated'
+        'STATUS_CHANGED': 'timeline.updated',
+        'VERIFICATION_STARTED': 'verification.started',
+        'VERIFICATION_COMPLETED': 'verification.completed',
+        'VERIFICATION_MANUAL_REVIEW': 'verification.manual_review',
+        'VERIFICATION_REPORT_GENERATED': 'verification.report.generated'
       };
       
       const topic = topicMap[eventType] || 'system.event';

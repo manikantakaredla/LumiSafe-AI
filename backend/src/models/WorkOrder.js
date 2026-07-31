@@ -25,6 +25,7 @@ const workOrderSchema = new mongoose.Schema({
   // Timing metrics
   acceptedAt: { type: Date },
   arrivedAt: { type: Date },
+  repairStartedAt: { type: Date },
   completedAt: { type: Date }
 
 }, { timestamps: true });
