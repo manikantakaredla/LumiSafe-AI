@@ -76,9 +76,36 @@ export function TopNav() {
               {ROLES.map(role => (
                 <button
                   key={role}
-                  onClick={() => {
+                  onClick={async () => {
                     setCurrentRole(role)
                     setRoleDropdownOpen(false)
+                    // Simulate login mapping
+                    const roleToEmail = {
+                      'Commissioner': 'commissioner@lumisafe.ai',
+                      'Electrical Supervisor': 'electrical@lumisafe.ai',
+                      'Field Engineer': 'field@lumisafe.ai',
+                      'City Operations': 'ops@lumisafe.ai',
+                      'Police': 'police@lumisafe.ai',
+                      'Public': 'citizen@lumisafe.ai',
+                      'Administrator': 'admin@lumisafe.ai'
+                    };
+                    const email = roleToEmail[role];
+                    if (email) {
+                      try {
+                        const res = await fetch('http://localhost:5000/api/v1/auth/login', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ email, password: 'password123' })
+                        });
+                        const data = await res.json();
+                        if (data.success && data.data.token) {
+                          localStorage.setItem('token', data.data.token);
+                          console.log(`[Auth] Logged in as ${role}`);
+                        }
+                      } catch (err) {
+                        console.error('[Auth] Failed to login', err);
+                      }
+                    }
                   }}
                   className="w-full text-left px-3 py-1.5 text-sm hover:bg-primary/20 hover:text-primary transition-colors"
                 >

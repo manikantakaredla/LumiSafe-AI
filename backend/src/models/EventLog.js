@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const eventLogSchema = new mongoose.Schema({
   eventType: { type: String, required: true },
-  entityId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  entityId: { type: String, required: true },
   entityModel: { type: String, required: true }, // e.g. 'Complaint', 'WorkOrder'
   
   payload: { type: mongoose.Schema.Types.Mixed }, // Arbitrary event data

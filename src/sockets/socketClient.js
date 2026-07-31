@@ -52,5 +52,29 @@ export const initSocketClient = () => {
     });
   });
 
+  socket.on('timeline.updated', (payload) => {
+    console.log('[Socket] timeline.updated:', payload);
+    const store = useAppStore.getState();
+    const { entityId, payload: data } = payload;
+    store.updateReportTimeline(entityId, {
+      label: data.status,
+      time: new Date().toISOString() // Or payload.timestamp if passed
+    });
+  });
+
+  socket.on('notification.created', (payload) => {
+    console.log('[Socket] notification.created:', payload);
+    const store = useAppStore.getState();
+    const { payload: data } = payload;
+    store.addNotification({
+      id: Math.random(),
+      title: data.title,
+      message: data.message,
+      time: 'Just now',
+      read: false,
+      type: data.type
+    });
+  });
+
   return socket;
 };

@@ -17,6 +17,7 @@ import { responseHandler } from './src/middleware/responseHandler.js';
 import { globalErrorHandler } from './src/middleware/errorHandler.js';
 
 // Routes
+import authRoutes from './src/modules/auth/auth.routes.js';
 import complaintRoutes from './src/modules/complaints/complaint.routes.js';
 import evidenceRoutes from './src/modules/evidence/evidence.routes.js';
 
@@ -40,6 +41,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // V1 API Routes with Rate Limiting
 app.use('/api/v1', apiLimiter);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/complaints', complaintRoutes);
 app.use('/api/v1/evidence', evidenceRoutes);
 
