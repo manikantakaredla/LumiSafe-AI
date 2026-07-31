@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { ModulePage } from '@/pages/ModulePage'
 import { CommissionerPage } from '@/pages/CommissionerPage'
 import { PublicPortal } from '@/components/public/PublicPortal'
+import { ElectricalPage } from '@/pages/ElectricalPage'
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Navigate to="commissioner" replace />} />
             <Route path="commissioner" element={<CommissionerPage />} />
-            <Route path="electrical" element={<ModulePage title="Electrical Dept" description="Manage street lights and electrical infrastructure." />} />
+            <Route path="electrical" element={<ElectricalPage />} />
             <Route path="city-operations" element={<ModulePage title="City Operations" description="Real-time multi-department monitoring." />} />
             <Route path="police" element={<ModulePage title="Police" description="Security and incident management." />} />
             <Route path="public" element={<PublicPortal />} />

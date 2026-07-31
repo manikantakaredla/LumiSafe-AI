@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Search, Bell, User, Clock, ChevronDown } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 
-const ROLES = ['Commissioner', 'Electrical Dept', 'City Operations', 'Police', 'Public', 'Administrator']
+const ROLES = ['Commissioner', 'Electrical Supervisor', 'Field Engineer', 'City Operations', 'Police', 'Public', 'Administrator']
 
 export function TopNav() {
   const { toggleCommandPalette, currentRole, setCurrentRole, notifications } = useAppStore()
