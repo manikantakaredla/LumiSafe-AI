@@ -1,5 +1,5 @@
 import PoliceUnit from '../../models/PoliceUnit.js';
-import { eventBus } from '../../events/eventBus.js';
+import { eventBus } from '../../engine/eventbus/eventBus.js';
 
 export const getAllUnits = async (req, res) => {
   try {

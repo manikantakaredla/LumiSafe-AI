@@ -12,13 +12,15 @@ const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (e
 
 export const seedAnalytics = async () => {
   try {
-    const complaintCount = await Complaint.countDocuments();
-    if (complaintCount > 20) {
-      logger.info('[Seeder] Analytics data appears to already exist. Skipping seedAnalytics.');
-      return;
-    }
-
     logger.info('[Seeder] Starting Analytics Seeding...');
+
+    await Ward.deleteMany({});
+    await StreetLight.deleteMany({});
+    await RepairTeam.deleteMany({});
+    await Complaint.deleteMany({});
+    await WorkOrder.deleteMany({});
+    await VerificationReport.deleteMany({});
+    logger.info('[Seeder] Cleared previous analytics data.');
 
     // 1. Create Wards
     const wards = [];
@@ -75,7 +77,7 @@ export const seedAnalytics = async () => {
         citizenId: new mongoose.Types.ObjectId(),
         category: ['Broken Pole', 'Flickering Light', 'No Power', 'Wire Sparking'][Math.floor(Math.random() * 4)],
         location: { type: 'Point', coordinates: [83.3, 17.7] },
-        status: isResolved ? 'Issue Resolved' : 'AI Processing',
+        status: isResolved ? 'Issue Resolved' : 'AI Classified & Prioritized',
         description: 'Auto-generated seed complaint',
         imageUrl: 'mock.jpg',
         source: 'Citizen App',

@@ -2,9 +2,9 @@
  * Analytics Service
  * Extracts MongoDB aggregation logic into a reusable shared layer.
  */
-import Complaint from '../../models/Complaint.js';
-import WorkOrder from '../../models/WorkOrder.js';
-import RepairTeam from '../../models/RepairTeam.js';
+import { Complaint } from '../../models/Complaint.js';
+import { WorkOrder } from '../../models/WorkOrder.js';
+import { RepairTeam } from '../../models/RepairTeam.js';
 
 class AnalyticsService {
   async getOperationalOverview() {
@@ -27,6 +27,16 @@ class AnalyticsService {
       resolvedToday: resolvedWOs,
       criticalOpen
     };
+  }
+
+  async getTeamPerformance() {
+    const teams = await RepairTeam.find({}).lean();
+    // Dummy logic for MVP, normally this would aggregate WorkOrders per team
+    return teams.map(t => ({
+      name: t.name,
+      completedToday: Math.floor(Math.random() * 10),
+      status: t.status
+    }));
   }
 }
 

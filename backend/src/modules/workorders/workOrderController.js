@@ -4,6 +4,25 @@ import { routeOptimizerEngine } from '../../engine/routing/RouteOptimizerEngine.
 import { eventBus, EVENTS } from '../../engine/eventbus/eventBus.js';
 import { v4 as uuidv4 } from 'uuid';
 
+export const getAll = async (req, res, next) => {
+  try {
+    const orders = await WorkOrder.find().populate('complaintId').populate('assignedTeamId');
+    res.status(200).json({ success: true, data: orders });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getById = async (req, res, next) => {
+  try {
+    const order = await WorkOrder.findOne({ workOrderId: req.params.id }).populate('complaintId').populate('assignedTeamId');
+    if (!order) return res.status(404).json({ success: false, message: 'Work Order not found' });
+    res.status(200).json({ success: true, data: order });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const optimizeRoutes = async (req, res, next) => {
   try {
     const unassignedOrders = await WorkOrder.find({ assignedTeamId: null }).populate('complaintId');

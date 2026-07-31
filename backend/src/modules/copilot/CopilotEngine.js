@@ -15,7 +15,7 @@ class CopilotEngine {
 
     // 1. Generate Briefings
     if (lowerQuery.includes('briefing') || lowerQuery.includes('daily summary') || lowerQuery.includes('morning brief')) {
-      const overview = await analyticsService.getOverviewStats();
+      const overview = await analyticsService.getOperationalOverview();
       const topTeams = await analyticsService.getTeamPerformance();
       
       // We return structured operational data, not conversational text
