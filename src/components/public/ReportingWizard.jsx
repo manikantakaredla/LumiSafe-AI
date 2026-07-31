@@ -22,24 +22,26 @@ export function ReportingWizard({ onCancel, onSuccess }) {
   const handleSubmit = async () => {
     setIsSubmitting(true)
     
-    const reportId = `REP-${Math.floor(Math.random() * 10000)}`
-    
-    // Simulate minor network delay
-    await new Promise(r => setTimeout(r, 600))
-    
-    // Publish to the Event-Driven AI Engine
-    const { eventBus, EVENTS } = await import('@/engine/eventBus')
-    eventBus.publish(EVENTS.REPORT_CREATED, {
-      report: {
-        id: reportId,
-        category,
-        lat: 17.72 + (Math.random() - 0.5) * 0.05,
-        lng: 83.31 + (Math.random() - 0.5) * 0.05,
-      }
-    })
-
-    setIsSubmitting(false)
-    onSuccess(reportId)
+    try {
+      const res = await fetch('http://localhost:5000/api/complaints/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category,
+          description: 'Citizen report via app',
+          lat: 17.72 + (Math.random() - 0.5) * 0.05,
+          lng: 83.31 + (Math.random() - 0.5) * 0.05
+        })
+      })
+      const data = await res.json()
+      setIsSubmitting(false)
+      onSuccess(data.data.complaintId)
+    } catch (err) {
+      console.error(err)
+      setIsSubmitting(false)
+      // fallback
+      onSuccess('REP-ERROR')
+    }
   }
 
   return (

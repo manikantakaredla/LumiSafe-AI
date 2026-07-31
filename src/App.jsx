@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
@@ -6,8 +6,14 @@ import { ModulePage } from '@/pages/ModulePage'
 import { CommissionerPage } from '@/pages/CommissionerPage'
 import { PublicPortal } from '@/components/public/PublicPortal'
 import { ElectricalPage } from '@/pages/ElectricalPage'
+import { initSocketClient } from '@/sockets/socketClient'
 
 function App() {
+  useEffect(() => {
+    // 1. Initialize Real-Time Connection to Backend
+    initSocketClient()
+  }, [])
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="lumisafe-theme">
       <BrowserRouter>
