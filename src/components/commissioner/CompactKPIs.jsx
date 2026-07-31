@@ -1,19 +1,50 @@
-import React from 'react'
-import { ShieldCheck, Map, Wrench, AlertCircle, FileSearch } from 'lucide-react'
-
-const KPIS = [
-  { id: 1, label: 'City Safety Index', value: '84.2', trend: '+1.4', icon: ShieldCheck, color: 'text-success' },
-  { id: 2, label: 'Critical Wards', value: '3', trend: '-1', icon: Map, color: 'text-warning' },
-  { id: 3, label: 'Active Repair Teams', value: '12', trend: 'Optimal', icon: Wrench, color: 'text-info' },
-  { id: 4, label: 'Pending Complaints', value: '142', trend: '+12', icon: AlertCircle, color: 'text-destructive' },
-  { id: 5, label: 'Evidence Pending', value: '8', trend: '-2', icon: FileSearch, color: 'text-warning' },
-]
+import React, { useState, useEffect } from 'react'
+import { ShieldCheck, Map, Wrench, AlertCircle, CheckCircle } from 'lucide-react'
+import { eventBus } from '@/sockets/socketClient'
 
 export function CompactKPIs() {
+  const [data, setData] = useState({
+    totalComplaintsToday: 0,
+    activeWorkOrders: 0,
+    blockedWorkOrders: 0,
+    resolvedToday: 0,
+    criticalOpen: 0
+  });
+
+  const fetchOverview = async () => {
+    try {
+      const res = await fetch('/api/v1/analytics/overview').then(r => r.json());
+      if (res.success) {
+        setData(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOverview();
+    
+    // Minimal real-time update
+    const sub = eventBus.subscribe('timeline.updated', () => {
+      fetchOverview();
+    });
+
+    return () => sub.unsubscribe();
+  }, []);
+
+  const KPIS = [
+    { id: 1, label: 'Complaints Today', value: data.totalComplaintsToday, trend: 'Daily', icon: AlertCircle, color: 'text-warning' },
+    { id: 2, label: 'Active Work Orders', value: data.activeWorkOrders, trend: 'In Field', icon: Wrench, color: 'text-info' },
+    { id: 3, label: 'Critical Tasks', value: data.criticalOpen, trend: 'Pending', icon: Map, color: 'text-destructive' },
+    { id: 4, label: 'Blocked WOs', value: data.blockedWorkOrders, trend: 'Attention', icon: ShieldCheck, color: 'text-destructive' },
+    { id: 5, label: 'Resolved Today', value: data.resolvedToday, trend: 'Closed', icon: CheckCircle, color: 'text-success' },
+  ];
+
   return (
     <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
       {KPIS.map(kpi => (
-        <div key={kpi.id} className="flex-1 min-w-[200px] bg-surface border rounded p-3 flex items-center gap-3">
+        <div key={kpi.id} className="flex-1 min-w-[200px] bg-surface border border-border shadow-sm rounded-md p-3 flex items-center gap-3 transition-colors">
           <div className={`p-2 bg-base rounded ${kpi.color}`}>
             <kpi.icon size={18} />
           </div>

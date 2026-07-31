@@ -28,6 +28,9 @@ export const connectDB = async () => {
     console.log(`MongoDB In-Memory Connected: ${conn.connection.host}`);
     
     await seedUsers();
+    
+    const { seedAnalytics } = await import('./seedAnalytics.js');
+    await seedAnalytics();
   } catch (error) {
     console.error(`MongoDB Connection Error: ${error.message}`);
     process.exit(1);
