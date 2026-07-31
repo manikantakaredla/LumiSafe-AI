@@ -8,7 +8,9 @@ import {
   ChevronRight,
   FileText,
   Lightbulb,
-  LogOut
+  LogOut,
+  BrainCircuit,
+  MessageSquareWarning
 } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
@@ -17,6 +19,8 @@ const NAV_ITEMS = [
   { name: 'Dashboard', path: '/app/dashboard', icon: Building2, roles: ['Commissioner', 'Administrator'] },
   { name: 'Street Lights', path: '/app/street-lights', icon: Lightbulb, roles: ['Commissioner', 'Electrical Supervisor', 'Administrator'] },
   { name: 'Joint Operations', path: '/app/operations', icon: Shield, roles: ['Commissioner', 'City Operations', 'Administrator'] },
+  { name: 'Resource Optimizer', path: '/app/optimizer', icon: BrainCircuit, roles: ['Commissioner', 'Administrator'] },
+  { name: 'Copilot', path: '/app/copilot', icon: MessageSquareWarning, roles: ['Commissioner', 'Administrator'] },
   { name: 'Reports', path: '/app/reports', icon: FileText, roles: ['Commissioner', 'Administrator'] },
   { name: 'Settings', path: '/app/settings', icon: Settings, roles: ['Commissioner', 'Electrical Supervisor', 'City Operations', 'Administrator'] },
 ]

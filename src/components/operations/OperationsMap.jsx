@@ -17,7 +17,8 @@ const ICONS = {
   complaint: createMarkerIcon('#B91C1C'), // Destructive (Red)
   team: createMarkerIcon('#1D4ED8'), // Info (Blue)
   police: createMarkerIcon('#C2410C'), // Warning/Police (Amber)
-  failedLight: createMarkerIcon('#64748B') // Slate
+  failedLight: createMarkerIcon('#64748B'), // Slate
+  riskPoi: createMarkerIcon('#9333EA') // Purple for AI Risk
 };
 
 export function OperationsMap() {
@@ -43,6 +44,12 @@ export function OperationsMap() {
     { id: 'L-101', lat: 17.723, lng: 83.312 },
     { id: 'L-102', lat: 17.7235, lng: 83.3125 },
     { id: 'L-103', lat: 17.724, lng: 83.313 },
+  ];
+
+  const riskPois = [
+    { id: 'POI-1', lat: 17.722, lng: 83.313, type: "Women's College", riskScore: 92, status: 'Critical Risk Zone' },
+    { id: 'POI-2', lat: 17.7255, lng: 83.316, type: "Major Bus Stop", riskScore: 85, status: 'High Risk Zone' },
+    { id: 'POI-3', lat: 17.720, lng: 83.310, type: "Heavy Footfall", riskScore: 78, status: 'Elevated Risk Zone' }
   ];
 
 
@@ -131,6 +138,27 @@ export function OperationsMap() {
             icon={ICONS.failedLight}
           >
             <Popup>Failed Street Light</Popup>
+          </Marker>
+        ))}
+
+        {riskPois.map(poi => (
+          <Marker 
+            key={poi.id} 
+            position={[poi.lat, poi.lng]} 
+            icon={ICONS.riskPoi}
+            opacity={getOpacity('POI', poi.id)}
+            eventHandlers={{ click: () => setSelectedEntity({ type: 'POI', id: poi.id }) }}
+          >
+            <Popup>
+               <div className="font-sans">
+                <strong className="block text-[#9333EA] uppercase text-[10px] tracking-wider mb-1">AI Risk Correlation Point</strong>
+                <span className="font-bold text-foreground text-sm">{poi.type}</span><br/>
+                <span className="text-xs text-muted-foreground">{poi.status}</span><br/>
+                <div className="mt-2 bg-[#9333EA]/10 border border-[#9333EA]/30 p-1 rounded text-center">
+                   <span className="text-xs font-black text-[#9333EA]">Darkness Risk Score: {poi.riskScore}/100</span>
+                </div>
+              </div>
+            </Popup>
           </Marker>
         ))}
       </MapContainer>

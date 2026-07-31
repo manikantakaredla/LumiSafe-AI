@@ -74,12 +74,7 @@ export function LandingPage() {
               >
                 <ShieldAlert size={20} /> Report Safety Concern
               </button>
-              <button 
-                onClick={() => navigate('/login')} 
-                className="bg-slate-800 text-white hover:bg-slate-900 px-8 py-4 rounded-md font-medium text-base flex items-center gap-3 transition-colors shadow-sm"
-              >
-                <Building2 size={20} /> Department Login
-              </button>
+              
             </div>
           </div>
         </section>

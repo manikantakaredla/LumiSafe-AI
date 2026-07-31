@@ -67,80 +67,65 @@ export function ElectricalPage() {
         <div className="w-full lg:w-1/3 flex flex-col gap-4 overflow-y-auto">
           
           <div className="bg-surface border border-border shadow-sm rounded-xl flex flex-col overflow-hidden shrink-0">
-            <div className="p-3 border-b border-border bg-secondary/30 flex items-center gap-2">
-              <AlertTriangle size={16} className="text-warning" />
-              <h2 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Priority Repair Queue</h2>
+            <div className="p-3 border-b border-border bg-primary/10 flex items-center gap-2">
+              <AlertTriangle size={16} className="text-primary animate-pulse" />
+              <h2 className="font-bold text-sm uppercase tracking-wider text-primary">AI Decision Engine</h2>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-secondary/10 border-b border-border">
-                  <tr>
-                    <th className="p-2 font-semibold text-muted-foreground">Priority</th>
-                    <th className="p-2 font-semibold text-muted-foreground">Ward</th>
-                    <th className="p-2 font-semibold text-muted-foreground">Failed</th>
-                    <th className="p-2 font-semibold text-muted-foreground">Risk</th>
-                    <th className="p-2 font-semibold text-muted-foreground">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {repairQueue.map((r, i) => (
-                    <React.Fragment key={i}>
-                      <tr className={`hover:bg-base transition-colors ${i === 0 && deployed ? 'opacity-50' : ''}`}>
-                        <td className="p-2 font-mono font-bold text-destructive">{r.priority}</td>
-                        <td className="p-2 font-medium">{r.ward}</td>
-                        <td className="p-2 font-mono text-muted-foreground">{r.failed}</td>
-                        <td className="p-2">
-                           <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${r.risk === 'Critical' ? 'bg-destructive/10 text-destructive border-destructive/20' : 'bg-warning/10 text-warning border-warning/20'}`}>
-                            {r.risk.toUpperCase()}
-                          </span>
-                        </td>
-                        <td 
-                          className="p-2 text-primary font-medium cursor-pointer hover:underline"
-                          onClick={() => {
-                            if (i === 0 && !deployed && r.action === 'Assign Team Now') {
-                              setAssigningIndex(assigningIndex === i ? null : i);
-                            }
-                          }}
-                        >
-                          {i === 0 && deployed ? 'Dispatched' : r.action}
-                        </td>
-                      </tr>
-                      {assigningIndex === i && (
-                        <tr className="bg-secondary/10">
-                          <td colSpan="5" className="p-3 border-t border-border">
-                             <div className="flex flex-col gap-3 animate-in slide-in-from-top-2 duration-200">
-                                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Select Available Field Team</span>
-                                <div className="flex gap-3 overflow-x-auto pb-1">
-                                  <button 
-                                    onClick={() => { handleDeploy(); setAssigningIndex(null); }} 
-                                    className="bg-surface border border-border px-4 py-2 rounded-lg shadow-sm hover:border-primary hover:bg-primary/5 transition-all text-left min-w-[140px]"
-                                  >
-                                    <span className="block text-sm font-bold text-foreground">Team Alpha</span>
-                                    <span className="block text-[10px] font-semibold text-success mt-1">Available • ETA 18m</span>
-                                  </button>
-                                  <button 
-                                    disabled
-                                    className="bg-surface border border-border px-4 py-2 rounded-lg shadow-sm opacity-50 cursor-not-allowed text-left min-w-[140px]"
-                                  >
-                                    <span className="block text-sm font-bold text-foreground">Team Beta</span>
-                                    <span className="block text-[10px] font-semibold text-warning mt-1">Working • ETA 2h</span>
-                                  </button>
-                                  <button 
-                                    disabled
-                                    className="bg-surface border border-border px-4 py-2 rounded-lg shadow-sm opacity-50 cursor-not-allowed text-left min-w-[140px]"
-                                  >
-                                    <span className="block text-sm font-bold text-foreground">Team Gamma</span>
-                                    <span className="block text-[10px] font-semibold text-primary mt-1">Assigned • ETA 52m</span>
-                                  </button>
-                                </div>
-                             </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
+            <div className="p-5 flex flex-col gap-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-xl font-extrabold text-foreground tracking-tight">Ward 18 Priority Directive</h3>
+                  <span className="inline-block mt-1 px-2 py-1 bg-destructive/10 text-destructive text-[10px] font-bold uppercase rounded border border-destructive/20">Critical Risk Level</span>
+                </div>
+                <div className="text-right">
+                   <p className="text-3xl font-black text-destructive leading-none">54</p>
+                   <p className="text-[10px] uppercase font-bold text-muted-foreground mt-1">Failed Lights</p>
+                </div>
+              </div>
+
+              <div className="bg-base border border-border rounded-lg p-4 mt-2 shadow-sm">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">AI Risk Correlation Factors</p>
+                <ul className="space-y-2 text-sm text-foreground">
+                  <li className="flex items-start gap-2">
+                     <span className="text-destructive mt-0.5">•</span>
+                     <span><strong>2 Major Bus Stops</strong> fall within the primary darkness zone.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                     <span className="text-destructive mt-0.5">•</span>
+                     <span><strong>3 Women's Colleges</strong> have reported safety concerns in adjacent streets.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                     <span className="text-warning mt-0.5">•</span>
+                     <span>Historical data predicts a <strong>68% spike</strong> in petty crime if unresolved within 48h.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {!deployed ? (
+                <div className="mt-2 flex flex-col gap-3 animate-in slide-in-from-bottom-2 duration-300">
+                  <p className="text-sm font-semibold text-foreground bg-primary/5 p-3 rounded border border-primary/20">
+                    <strong className="text-primary">AI Recommendation:</strong> Immediate deployment of Team Alpha is mathematically optimal to reduce projected incidents by 42%.
+                  </p>
+                  
+                  <div className="flex gap-2 mt-2">
+                    <button 
+                      onClick={handleDeploy}
+                      disabled={isDeploying}
+                      className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                    >
+                      {isDeploying ? <Loader2 size={16} className="animate-spin" /> : 'Execute Autonomous Deployment'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-2 bg-success/10 border border-success/30 p-4 rounded-lg flex items-center gap-3 animate-in fade-in duration-300">
+                  <CheckCircle2 size={24} className="text-success shrink-0" />
+                  <div>
+                    <h4 className="font-bold text-sm text-success">AI Directive Executed</h4>
+                    <p className="text-xs text-success/80 mt-0.5">Team Alpha dispatched. Risk mitigation in progress.</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

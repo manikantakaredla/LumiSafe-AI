@@ -6,6 +6,8 @@ import { RoleBasedRedirect } from '@/components/layout/RoleBasedRedirect'
 import { CommissionerPage } from '@/pages/CommissionerPage'
 import { ElectricalPage } from '@/pages/ElectricalPage'
 import { CityOperationsPage } from '@/pages/CityOperationsPage'
+import { AiResourceOptimizerPage } from '@/pages/AiResourceOptimizerPage'
+import { CopilotPage } from '@/pages/CopilotPage'
 import { ReportsPage } from '@/pages/ReportsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { LandingPage } from '@/pages/LandingPage'
@@ -31,6 +33,8 @@ function App() {
             <Route path="dashboard" element={<CommissionerPage />} />
             <Route path="street-lights" element={<ElectricalPage />} />
             <Route path="operations" element={<CityOperationsPage />} />
+            <Route path="optimizer" element={<AiResourceOptimizerPage />} />
+            <Route path="copilot" element={<CopilotPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
