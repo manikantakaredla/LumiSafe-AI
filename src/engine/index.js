@@ -8,6 +8,7 @@ import { timelineEngine } from './timelineEngine'
 import { notificationEngine } from './notificationEngine'
 import { gisEngine } from './gisEngine'
 import { dashboardSyncEngine } from './dashboardSyncEngine'
+import { verificationEngine } from './verificationEngine'
 
 export function initializeAIEngine() {
   console.log('[AI ENGINE] Initializing Event-Driven Operations Engine...')
@@ -22,6 +23,7 @@ export function initializeAIEngine() {
   notificationEngine.init()
   gisEngine.init()
   dashboardSyncEngine.init()
+  verificationEngine.init()
   
   console.log('[AI ENGINE] All modules subscribed to Operations Event Bus.')
 }

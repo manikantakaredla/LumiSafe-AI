@@ -2,6 +2,7 @@ import React from 'react'
 import { X } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
+import { VerificationReport } from '@/components/electrical/VerificationReport'
 
 export function RightDrawer() {
   const { rightDrawer, closeDrawer } = useAppStore()
@@ -97,6 +98,37 @@ export function RightDrawer() {
     </div>
   )
 
+  const renderWorkOrder = () => {
+    const { publicReports } = useAppStore.getState()
+    const workOrder = publicReports.find(r => r.id === rightDrawer.entityId)
+    
+    if (!workOrder) return <div className="text-muted-foreground p-4">Work Order not found.</div>
+
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+            <span className="text-muted-foreground uppercase text-[11px] font-semibold">Priority</span>
+            <span className={`font-mono font-bold uppercase ${workOrder.priority === 'Critical' ? 'text-destructive' : 'text-warning'}`}>{workOrder.priority}</span>
+          </div>
+          <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+            <span className="text-muted-foreground uppercase text-[11px] font-semibold">Status</span>
+            <span className="font-mono text-foreground font-medium">{workOrder.status}</span>
+          </div>
+          <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+            <span className="text-muted-foreground uppercase text-[11px] font-semibold">Engineer Status</span>
+            <span className="font-mono text-info">{workOrder.engineerStatus || 'Pending'}</span>
+          </div>
+        </div>
+
+        {/* If there's verification data, show the report */}
+        {workOrder.verificationDetails && (
+          <VerificationReport workOrder={workOrder} />
+        )}
+      </div>
+    )
+  }
+
   // Placeholder content based on entityType
   const renderContent = () => {
     if (!rightDrawer.entityType) return (
@@ -112,6 +144,7 @@ export function RightDrawer() {
       case 'Complaint': return renderIncident()
       case 'Repair Team':
       case 'Police Patrol': return renderTeam()
+      case 'Work Order': return renderWorkOrder()
       default: return (
         <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
           No operational data available for this entity type.
