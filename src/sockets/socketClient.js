@@ -45,10 +45,21 @@ export const initSocketClient = () => {
     const store = useAppStore.getState();
     const { entityId, payload: data } = payload;
     store.updateReportState(entityId, {
-      status: 'Assigned to Electrical Dept',
-      assignedTeam: 'Alpha Team (Auto)',
-      engineerStatus: 'Pending',
+      status: 'Awaiting Electrical Assignment',
+      engineerStatus: 'Unassigned',
       inventoryRequired: data.inventory
+    });
+  });
+
+  socket.on('workorder.updated', (payload) => {
+    console.log('[Socket] workorder.updated:', payload);
+    const store = useAppStore.getState();
+    const { entityId, payload: data } = payload;
+    store.updateReportState(entityId, {
+      status: 'Assigned to ' + data.teamName,
+      assignedTeam: data.teamName,
+      engineerStatus: 'ASSIGNED',
+      aiExplanation: data.aiExplanation
     });
   });
 
@@ -56,10 +67,28 @@ export const initSocketClient = () => {
     console.log('[Socket] timeline.updated:', payload);
     const store = useAppStore.getState();
     const { entityId, payload: data } = payload;
+    
+    // Append to timeline
     store.updateReportTimeline(entityId, {
       label: data.status,
       time: new Date().toISOString() // Or payload.timestamp if passed
     });
+
+    // Update global state if engineerStatus provided
+    if (data.engineerStatus) {
+      store.updateReportState(entityId, {
+        engineerStatus: data.engineerStatus
+      });
+    }
+
+    if (data.verificationResult) {
+       store.updateReportState(entityId, {
+         verificationDetails: {
+           confidence: data.verificationResult.confidence,
+           reason: data.verificationResult.reason
+         }
+       });
+    }
   });
 
   socket.on('notification.created', (payload) => {

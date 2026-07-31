@@ -9,15 +9,15 @@ class WorkOrderService {
   async handleWorkOrderCreated(eventData) {
     const { entityId, payload, correlationId } = eventData;
     
-    // Create the actual work order
+    // Create the actual work order as Unassigned
     const workOrderId = `WO-${Math.floor(Math.random() * 100000)}`;
     const workOrder = await WorkOrder.create({
       workOrderId,
       complaintId: entityId,
       status: 'Pending',
       priority: 'High',
-      requiredMaterials: payload.inventory || [],
-      assignedToTeam: 'Auto Dispatch'
+      requiredInventory: payload.inventory || []
+      // No assignedTeamId yet!
     });
 
     // We can emit a specific workorder.created event if we want, but the RecommendationEngine already emitted it.

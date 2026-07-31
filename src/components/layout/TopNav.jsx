@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Search, Bell, User, Clock, ChevronDown } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 
-const ROLES = ['Commissioner', 'Electrical Supervisor', 'Field Engineer', 'City Operations', 'Police', 'Public', 'Administrator']
+const ROLES = ['Commissioner', 'Electrical Supervisor', 'Field Engineer (Alpha)', 'Field Engineer (Beta)', 'City Operations', 'Police', 'Public', 'Administrator']
 
 export function TopNav() {
   const { toggleCommandPalette, currentRole, setCurrentRole, notifications } = useAppStore()
@@ -83,7 +83,8 @@ export function TopNav() {
                     const roleToEmail = {
                       'Commissioner': 'commissioner@lumisafe.ai',
                       'Electrical Supervisor': 'electrical@lumisafe.ai',
-                      'Field Engineer': 'field@lumisafe.ai',
+                      'Field Engineer (Alpha)': 'field@lumisafe.ai',
+                      'Field Engineer (Beta)': 'beta@lumisafe.ai',
                       'City Operations': 'ops@lumisafe.ai',
                       'Police': 'police@lumisafe.ai',
                       'Public': 'citizen@lumisafe.ai',

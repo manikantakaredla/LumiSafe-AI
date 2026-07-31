@@ -20,6 +20,7 @@ import { globalErrorHandler } from './src/middleware/errorHandler.js';
 import authRoutes from './src/modules/auth/auth.routes.js';
 import complaintRoutes from './src/modules/complaints/complaint.routes.js';
 import evidenceRoutes from './src/modules/evidence/evidence.routes.js';
+import workorderRoutes from './src/modules/workorders/workorders.routes.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -44,6 +45,7 @@ app.use('/api/v1', apiLimiter);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/complaints', complaintRoutes);
 app.use('/api/v1/evidence', evidenceRoutes);
+app.use('/api/v1/workorders', workorderRoutes);
 
 // Health Monitoring Endpoint
 app.get('/api/v1/health', (req, res) => {

@@ -4,34 +4,46 @@ import { eventBus, EVENTS } from '@/engine/eventBus'
 import { QrCode, MapPin, Wrench, Upload, CheckCircle2, Navigation, AlertTriangle, ArrowLeft, Camera, Loader2, SignalHigh } from 'lucide-react'
 
 export function FieldEngineer() {
-  const { publicReports } = useAppStore()
+  const { publicReports, currentRole } = useAppStore()
   const [activeTask, setActiveTask] = useState(null)
   const [evidenceStep, setEvidenceStep] = useState(false)
   const [verificationState, setVerificationState] = useState('idle') // idle, uploading, verifying, success
 
-  // Filter for tasks assigned to Alpha Team (mock current user)
-  const myTasks = publicReports.filter(r => r.workOrderId && r.status !== 'Issue Resolved')
-  const completedTasks = publicReports.filter(r => r.workOrderId && r.status === 'Issue Resolved')
+  const teamName = currentRole.includes('Beta') ? 'Beta Team' : 'Alpha Team';
+
+  // Filter for tasks assigned to current team
+  const myTasks = publicReports.filter(r => r.workOrderId && r.status !== 'Issue Resolved' && r.assignedTeam === teamName)
+  const completedTasks = publicReports.filter(r => r.workOrderId && r.status === 'Issue Resolved' && r.assignedTeam === teamName)
 
   const handleAction = async (actionType) => {
     if (!activeTask) return
 
+    let nextStatus = ''
     switch (actionType) {
-      case 'ACCEPT':
-        eventBus.publish(EVENTS.TASK_ACCEPTED, { reportId: activeTask.id })
-        break
-      case 'NAVIGATE':
-        eventBus.publish(EVENTS.NAV_STARTED, { reportId: activeTask.id })
-        break
-      case 'ARRIVE':
-        eventBus.publish(EVENTS.ARRIVED_ONSITE, { reportId: activeTask.id })
-        break
-      case 'REPAIR':
-        eventBus.publish(EVENTS.REPAIR_STARTED, { reportId: activeTask.id })
-        break
+      case 'accept': nextStatus = 'ACCEPTED'; break;
+      case 'navigate': nextStatus = 'NAVIGATING'; break;
+      case 'arrive': nextStatus = 'ARRIVED'; break;
+      case 'repair': nextStatus = 'REPAIRING'; break;
+      case 'blocked': nextStatus = 'BLOCKED'; break;
       case 'EVIDENCE':
         setEvidenceStep(true)
         break
+    }
+
+    if (nextStatus) {
+      try {
+        const token = localStorage.getItem('token');
+        await fetch(`http://localhost:5000/api/v1/workorders/${activeTask.workOrderId}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+          },
+          body: JSON.stringify({ status: nextStatus })
+        });
+      } catch (err) {
+        console.error('Failed to update status:', err);
+      }
     }
   }
 
@@ -39,20 +51,38 @@ export function FieldEngineer() {
     setVerificationState('uploading')
     await new Promise(r => setTimeout(r, 800))
     
-    eventBus.publish(EVENTS.EVIDENCE_UPLOADED, { 
-      reportId: activeTask.id,
-      evidence: {
-        beforePhoto: 'mock_before.jpg',
-        afterPhoto: 'mock_after.jpg',
-        gps: { lat: activeTask.lat, lng: activeTask.lng },
-        timestamp: new Date().toISOString()
-      }
-    })
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`http://localhost:5000/api/v1/evidence/upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
+        body: JSON.stringify({
+          workOrderId: activeTask.workOrderId,
+          beforePhoto: 'base64_encoded_mock...',
+          afterPhoto: 'base64_encoded_mock...',
+          lat: 17.68,
+          lng: 83.21
+        })
+      });
 
-    setVerificationState('verifying')
-    
-    // The Event Bus will autonomously verify this and resolve it.
-    // We just wait for the UI store to reflect the 'Issue Resolved' status.
+      // State moves to VERIFYING automatically via backend event
+      setVerificationState('verifying')
+      
+      // We don't need to auto-close here. The backend verification engine will transition the state 
+      // to RESOLVED or MANUAL_REVIEW_REQUIRED and broadcast `workorder.updated` via socket.
+      // But we will reset our local UI state after a few seconds so it doesn't stay stuck forever in 'verifying' if they navigate away.
+      setTimeout(() => {
+        setEvidenceStep(false)
+        setActiveTask(null)
+        setVerificationState('idle')
+      }, 3500)
+    } catch (err) {
+      console.error(err);
+      setVerificationState('idle')
+    }
   }
 
   // Effect to watch for resolution and close the evidence screen
@@ -205,34 +235,44 @@ export function FieldEngineer() {
         </div>
 
         <div className="p-4 bg-surface border-t border-border shrink-0 space-y-3">
-          {(!status || status === 'Pending') && (
-            <button onClick={() => handleAction('ACCEPT')} className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg hover:bg-primary/90">
+          {status === 'ASSIGNED' && (
+            <button onClick={() => handleAction('accept')} className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg hover:bg-primary/90">
               <CheckCircle2 size={20} /> Accept Task
             </button>
           )}
-          {status === 'Task Accepted' && (
-            <button onClick={() => handleAction('NAVIGATE')} className="w-full bg-info text-info-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg">
+          {status === 'ACCEPTED' && (
+            <button onClick={() => handleAction('navigate')} className="w-full bg-info text-info-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg">
               <Navigation size={20} /> Start Navigation
             </button>
           )}
-          {status === 'En Route' && (
-            <button onClick={() => handleAction('ARRIVE')} className="w-full bg-secondary text-foreground border border-border py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg hover:bg-secondary/80">
+          {status === 'NAVIGATING' && (
+            <button onClick={() => handleAction('arrive')} className="w-full bg-secondary text-foreground border border-border py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg hover:bg-secondary/80">
               <MapPin size={20} /> Arrived On Site
             </button>
           )}
-          {status === 'Arrived On Site' && (
-            <button onClick={() => handleAction('REPAIR')} className="w-full bg-warning text-warning-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg">
-              <Wrench size={20} /> Begin Repair
-            </button>
+          {status === 'ARRIVED' && (
+            <div className="flex gap-2">
+              <button onClick={() => handleAction('repair')} className="flex-1 bg-warning text-warning-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg">
+                <Wrench size={20} /> Begin Repair
+              </button>
+              <button onClick={() => handleAction('blocked')} className="flex-1 bg-destructive text-destructive-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg">
+                <AlertTriangle size={20} /> Report Blocked
+              </button>
+            </div>
           )}
-          {status === 'Repairing' && (
+          {status === 'BLOCKED' && (
+            <div className="w-full bg-destructive/10 border border-destructive/20 text-destructive p-4 rounded-xl text-center text-sm font-semibold">
+              <AlertTriangle size={20} className="inline mr-2" /> Task Blocked. Awaiting Supervisor Override.
+            </div>
+          )}
+          {status === 'REPAIRING' && (
             <button onClick={() => handleAction('EVIDENCE')} className="w-full bg-success text-success-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg">
               <Camera size={20} /> Upload Evidence
             </button>
           )}
-          {(status === 'Verifying Evidence' || status === 'Issue Resolved') && (
+          {(status === 'VERIFYING' || status === 'RESOLVED' || status === 'MANUAL_REVIEW_REQUIRED') && (
             <button disabled className="w-full bg-secondary text-muted-foreground py-4 rounded-xl font-bold flex justify-center items-center gap-2">
-              <CheckCircle2 size={20} /> Task Finished
+              <CheckCircle2 size={20} /> {status === 'VERIFYING' ? 'Verifying...' : status === 'RESOLVED' ? 'Finished' : 'Under Review'}
             </button>
           )}
         </div>
@@ -252,7 +292,7 @@ export function FieldEngineer() {
             <div className="flex items-center justify-between p-5 border-b border-border bg-surface shrink-0">
               <div>
                 <h1 className="text-xl font-bold text-foreground">Field Operations</h1>
-                <p className="text-xs text-info font-mono mt-0.5">Alpha Team • Online</p>
+                <p className="text-xs text-info font-mono mt-0.5">{teamName} • Online</p>
               </div>
               <button className="p-3 bg-secondary rounded-full text-foreground hover:bg-secondary/80 transition-colors relative group">
                 <QrCode size={20} />

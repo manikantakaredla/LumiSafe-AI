@@ -104,6 +104,23 @@ export function RightDrawer() {
     
     if (!workOrder) return <div className="text-muted-foreground p-4">Work Order not found.</div>
 
+    const handleManualAssign = async (teamName) => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:5000/api/v1/workorders/${workOrder._id}/assign`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+          },
+          body: JSON.stringify({ teamName, reason: 'Supervisor Manual Assignment' })
+        });
+        if (!res.ok) alert('Failed to manually assign');
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     return (
       <div className="space-y-6">
         <div className="space-y-2 text-sm">
@@ -120,6 +137,27 @@ export function RightDrawer() {
             <span className="font-mono text-info">{workOrder.engineerStatus || 'Pending'}</span>
           </div>
         </div>
+
+        {workOrder.aiExplanation && (
+          <div className="bg-primary/10 border border-primary/20 p-3 rounded">
+            <p className="text-[11px] text-primary uppercase font-bold mb-1">AI Recommendation</p>
+            <div className="text-xs text-foreground whitespace-pre-line leading-relaxed">{workOrder.aiExplanation.reason}</div>
+            <div className="mt-2 pt-2 border-t border-primary/10 flex justify-between text-[11px]">
+              <span className="text-muted-foreground font-mono">CONF: {workOrder.aiExplanation.confidence}</span>
+              <span className="text-success font-medium tracking-wider">{workOrder.aiExplanation.expectedImpact}</span>
+            </div>
+          </div>
+        )}
+
+        {(workOrder.engineerStatus === 'Unassigned' || !workOrder.engineerStatus) && (
+          <div className="bg-surface border border-border p-3 rounded">
+             <p className="text-[11px] text-muted-foreground uppercase font-bold mb-2 tracking-wider">Manual Dispatch Override</p>
+             <div className="flex gap-2">
+               <button onClick={() => handleManualAssign('Alpha Team')} className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground py-2 rounded text-xs font-semibold transition-colors">Assign Alpha</button>
+               <button onClick={() => handleManualAssign('Beta Team')} className="flex-1 bg-secondary hover:bg-secondary/80 text-foreground py-2 rounded text-xs font-semibold transition-colors">Assign Beta</button>
+             </div>
+          </div>
+        )}
 
         {/* If there's verification data, show the report */}
         {workOrder.verificationDetails && (

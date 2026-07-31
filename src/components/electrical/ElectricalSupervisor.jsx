@@ -6,15 +6,31 @@ export function ElectricalSupervisor() {
   const { publicReports, openDrawer } = useAppStore()
   
   const workOrders = publicReports.filter(r => !!r.workOrderId)
-  const pendingWO = workOrders.filter(w => w.engineerStatus === undefined || w.engineerStatus === 'Task Accepted')
-  const activeWO = workOrders.filter(w => ['En Route', 'Arrived On Site', 'Repairing', 'Verifying Evidence'].includes(w.engineerStatus))
-  const completedWO = workOrders.filter(w => w.status === 'Issue Resolved')
-  const criticalWO = workOrders.filter(w => w.priority === 'Critical' && w.status !== 'Issue Resolved')
+  const pendingWO = workOrders.filter(w => !w.engineerStatus || w.engineerStatus === 'UNASSIGNED' || w.engineerStatus === 'ASSIGNED' || w.engineerStatus === 'ACCEPTED')
+  const activeWO = workOrders.filter(w => ['NAVIGATING', 'ARRIVED', 'REPAIRING', 'EVIDENCE_PENDING', 'VERIFYING'].includes(w.engineerStatus))
+  const blockedWO = workOrders.filter(w => w.engineerStatus === 'BLOCKED' || w.engineerStatus === 'MANUAL_REVIEW_REQUIRED')
+  const completedWO = workOrders.filter(w => w.engineerStatus === 'RESOLVED' || w.engineerStatus === 'CLOSED')
+  const criticalWO = workOrders.filter(w => w.priority === 'Critical' && !['RESOLVED', 'CLOSED'].includes(w.engineerStatus))
 
-  const handleOptimize = () => {
-    // In a real scenario, this would publish an event to RouteOptimizerEngine
-    // eventBus.publish(EVENTS.ROUTE_OPTIMIZATION_REQUESTED, {})
-    alert("AI Route Optimization triggered: Analyzing distance, priority, safety impact, traffic, and material constraints.")
+  const handleOptimize = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/v1/workorders/optimize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        console.log('[Supervisor] Route Optimization complete:', data.data);
+      } else {
+        alert(data.message || "Failed to optimize routes");
+      }
+    } catch (err) {
+      console.error('[Supervisor] Optimization error:', err);
+    }
   }
 
   const TeamCard = ({ name, status, activeTask, eta }) => (
@@ -97,6 +113,13 @@ export function ElectricalSupervisor() {
           </div>
           <p className="text-2xl font-mono text-success font-medium">{completedWO.length}</p>
         </div>
+        <div className="bg-destructive/5 border border-destructive/20 p-4 rounded shadow-sm">
+          <div className="flex items-center justify-between text-destructive mb-2">
+            <span className="text-xs uppercase font-semibold">Blocked Crews</span>
+            <AlertTriangle size={16} />
+          </div>
+          <p className="text-2xl font-mono text-destructive font-bold">{blockedWO.length}</p>
+        </div>
         <div className="bg-destructive/10 border border-destructive/20 p-4 rounded shadow-sm">
           <div className="flex items-center justify-between text-destructive mb-2">
             <span className="text-xs uppercase font-semibold">Critical Escalations</span>
@@ -107,7 +130,6 @@ export function ElectricalSupervisor() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
-        
         {/* Teams Overview */}
         <div className="bg-surface border border-border rounded shadow-sm flex flex-col min-h-0">
           <div className="p-3 border-b border-border bg-base shrink-0">

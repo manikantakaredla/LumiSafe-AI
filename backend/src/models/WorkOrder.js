@@ -9,8 +9,8 @@ const workOrderSchema = new mongoose.Schema({
   
   status: { 
     type: String, 
-    enum: ['Pending', 'Task Accepted', 'En Route', 'Arrived On Site', 'Repairing', 'Verifying Evidence', 'Needs Review', 'Resolved'],
-    default: 'Pending'
+    enum: ['CREATED', 'UNASSIGNED', 'ASSIGNED', 'ACCEPTED', 'NAVIGATING', 'ARRIVED', 'REPAIRING', 'BLOCKED', 'EVIDENCE_PENDING', 'VERIFYING', 'MANUAL_REVIEW_REQUIRED', 'RESOLVED', 'CLOSED', 'Pending', 'In Progress', 'Issue Resolved'], // Kept legacy strings temporarily to avoid breaking old data in DB
+    default: 'UNASSIGNED'
   },
   
   priority: { type: String, enum: ['Critical', 'High', 'Medium', 'Low'] },

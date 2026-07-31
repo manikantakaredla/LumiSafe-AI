@@ -1,22 +1,17 @@
 import mongoose from 'mongoose';
 
 const repairTeamSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true }, // e.g. "Alpha Team"
-  zone: { type: String, required: true },
-  vehicle: { type: String },
-  
-  status: { type: String, enum: ['Active', 'Standby', 'Offline'], default: 'Standby' },
-  
-  // Geospatial Data (Live Tracking)
+  name: { type: String, required: true },
+  department: { type: String, default: 'Electrical' },
+  members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  status: { type: String, enum: ['AVAILABLE', 'ASSIGNED', 'EN_ROUTE', 'ON_SITE', 'REPAIRING', 'BLOCKED', 'RETURNING', 'OFFLINE'], default: 'AVAILABLE' },
   currentLocation: {
-    type: { type: String, enum: ['Point'], default: 'Point' },
-    coordinates: { type: [Number] } // [longitude, latitude]
+    type: { type: String, default: 'Point' },
+    coordinates: { type: [Number] } // [lng, lat]
   },
-  
   activeWorkOrderId: { type: mongoose.Schema.Types.ObjectId, ref: 'WorkOrder' },
-  
-  capacity: { type: Number, default: 5 } // Tasks per day
-
+  inventory: [{ type: String }],
+  isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
 
 repairTeamSchema.index({ currentLocation: '2dsphere' });

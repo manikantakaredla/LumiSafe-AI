@@ -1,11 +1,9 @@
 import express from 'express';
-// import multer from 'multer'; // Uncomment when fully ready
+import { uploadEvidence } from './evidenceController.js';
+import { protect } from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/upload', async (req, res) => {
-  // Placeholder for evidence upload endpoint
-  res.status(200).json({ message: 'Evidence upload API placeholder' });
-});
+router.post('/upload', uploadEvidence);
 
 export default router;
