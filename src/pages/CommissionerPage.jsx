@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { OperationsBrief } from '@/components/commissioner/OperationsBrief'
+import { AiExecutiveSummary } from '@/components/commissioner/AiExecutiveSummary'
 import { CompactKPIs } from '@/components/commissioner/CompactKPIs'
 
 import { ResolutionTrendsChart } from '@/components/analytics/ResolutionTrendsChart'
@@ -40,6 +41,10 @@ export function CommissionerPage() {
       <div className="shrink-0 flex items-center justify-between mb-2">
         <Breadcrumbs />
       </div>
+
+      <section className="shrink-0 animate-in fade-in slide-in-from-bottom-1 duration-500">
+        <AiExecutiveSummary />
+      </section>
 
       {/* Section 1: Operations Brief (Hero - 100% Width) */}
       <section className="shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-500">

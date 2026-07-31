@@ -41,6 +41,16 @@ export function OperationsBrief() {
         </div>
       </div>
 
+      <div className="px-4 py-3 bg-secondary/20 border-t border-border/50">
+        <p className="text-[11px] text-muted-foreground font-mono uppercase tracking-wider mb-2">Why this recommendation?</p>
+        <div className="flex flex-wrap gap-2">
+          <span className="px-2 py-1 bg-surface border border-border text-xs text-foreground rounded">Highest complaint density</span>
+          <span className="px-2 py-1 bg-surface border border-border text-xs text-foreground rounded">Highest women safety impact</span>
+          <span className="px-2 py-1 bg-surface border border-border text-xs text-foreground rounded">14 failed street lights</span>
+          <span className="px-2 py-1 bg-surface border border-border text-xs text-foreground rounded">Nearest repair team (1.2km)</span>
+        </div>
+      </div>
+
       <div className="p-3 bg-base border-t flex items-center justify-end gap-3 rounded-b-md">
         <button className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary rounded transition-colors">
           Reject AI Recommendation
