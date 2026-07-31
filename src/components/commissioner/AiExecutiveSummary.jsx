@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot } from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 export function AiExecutiveSummary() {
   const [summary, setSummary] = useState(null);
@@ -36,11 +36,11 @@ export function AiExecutiveSummary() {
   );
 
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] shadow-md rounded-md overflow-hidden flex flex-col md:flex-row">
-      <div className="bg-[#1e293b]/50 p-4 flex flex-col justify-center items-center md:w-48 border-b md:border-b-0 md:border-r border-[#1e293b]">
-        <Bot size={32} className="text-primary mb-2" />
-        <h3 className="text-sm font-semibold text-slate-200 text-center uppercase tracking-wider">AI Executive<br/>Briefing</h3>
-        <p className="text-[10px] text-slate-500 font-mono mt-2">Generated: {summary.generatedAt}</p>
+    <div className="bg-surface flex flex-col md:flex-row border-b border-border">
+      <div className="bg-secondary/30 p-4 flex flex-col justify-center items-center md:w-48 border-b md:border-b-0 md:border-r border-border">
+        <Activity size={28} className="text-primary mb-2" />
+        <h3 className="text-sm font-semibold text-foreground text-center uppercase tracking-wider">Operations<br/>Assessment</h3>
+        <p className="text-[10px] text-muted-foreground font-mono mt-2">Generated: {summary.generatedAt}</p>
       </div>
       
       <div className="p-4 flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -69,8 +69,8 @@ export function AiExecutiveSummary() {
           <p className="font-medium text-info">{summary.bestPerformingTeam}</p>
         </div>
         <div className="col-span-2">
-          <p className="text-[11px] text-slate-500 font-mono uppercase tracking-wider mb-1">AI Assessment</p>
-          <p className="text-sm text-slate-300">
+          <p className="text-[11px] text-muted-foreground font-mono uppercase tracking-wider mb-1">System Assessment</p>
+          <p className="text-sm text-foreground">
             Immediate dispatch to Ward 4 is required to mitigate cascading electrical failures. 
             Estimated risk reduction is <span className="text-success font-semibold">{summary.estimatedRiskReduction}</span> if resolved within 4 hours.
           </p>

@@ -1,41 +1,48 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  ShieldAlert,
-  Zap,
   Building2,
-  Users,
   Shield,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileText,
+  Lightbulb,
+  LogOut
 } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = [
-  { name: 'Commissioner', path: '/app/commissioner', icon: ShieldAlert },
-  { name: 'Electrical Dept', path: '/app/electrical', icon: Zap },
-  { name: 'City Operations', path: '/app/city-operations', icon: Building2 },
-  { name: 'Police', path: '/app/police', icon: Shield },
-  { name: 'Public', path: '/app/public', icon: Users },
-  { name: 'Administrator', path: '/app/admin', icon: Settings },
+  { name: 'Dashboard', path: '/app/dashboard', icon: Building2, roles: ['Commissioner', 'Administrator'] },
+  { name: 'Street Lights', path: '/app/street-lights', icon: Lightbulb, roles: ['Commissioner', 'Electrical Supervisor', 'Administrator'] },
+  { name: 'Joint Operations', path: '/app/operations', icon: Shield, roles: ['Commissioner', 'City Operations', 'Administrator'] },
+  { name: 'Reports', path: '/app/reports', icon: FileText, roles: ['Commissioner', 'Administrator'] },
+  { name: 'Settings', path: '/app/settings', icon: Settings, roles: ['Commissioner', 'Electrical Supervisor', 'City Operations', 'Administrator'] },
 ]
 
 export function Sidebar() {
-  const { isSidebarCollapsed, toggleSidebar } = useAppStore()
+  const { isSidebarCollapsed, toggleSidebar, currentRole, setCurrentRole } = useAppStore()
+  const navigate = useNavigate();
+  
+  const visibleNavItems = NAV_ITEMS.filter(item => item.roles.includes(currentRole));
+
+  const handleLogout = () => {
+    setCurrentRole(null);
+    navigate('/');
+  };
 
   return (
     <aside
       className={cn(
-        "flex flex-col bg-card border-r transition-all duration-300 ease-in-out h-full relative",
+        "flex flex-col bg-surface border-r border-border transition-all duration-300 ease-in-out h-full relative",
         isSidebarCollapsed ? "w-16" : "w-64"
       )}
     >
-      <div className="h-12 flex items-center justify-between px-4 border-b">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-border">
         {!isSidebarCollapsed && (
-          <span className="text-sm font-semibold text-primary truncate">
-            MODULES
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider truncate">
+            GVMC Modules
           </span>
         )}
         <button
@@ -46,26 +53,40 @@ export function Sidebar() {
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-        {NAV_ITEMS.map((item) => (
+      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        {visibleNavItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium",
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-semibold",
                 isActive
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )
             }
             title={isSidebarCollapsed ? item.name : undefined}
           >
-            <item.icon size={20} className="shrink-0" />
+            <item.icon size={18} className="shrink-0" />
             {!isSidebarCollapsed && <span className="truncate">{item.name}</span>}
           </NavLink>
         ))}
       </nav>
+
+      <div className="p-3 border-t border-border">
+        <button 
+          onClick={handleLogout}
+          className={cn(
+            "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-semibold text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
+            isSidebarCollapsed && "justify-center px-0"
+          )}
+          title={isSidebarCollapsed ? "Logout" : undefined}
+        >
+          <LogOut size={18} className="shrink-0" />
+          {!isSidebarCollapsed && <span>Logout</span>}
+        </button>
+      </div>
     </aside>
   )
 }

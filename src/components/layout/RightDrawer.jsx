@@ -3,9 +3,10 @@ import { X } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
 import { VerificationReport } from '@/components/electrical/VerificationReport'
+import { CopilotPanel } from '@/components/copilot/CopilotPanel'
 
 export function RightDrawer() {
-  const { rightDrawer, closeDrawer } = useAppStore()
+  const { rightDrawer, closeDrawer, copilotMode } = useAppStore()
 
   const renderWard = () => (
     <div className="space-y-4 text-sm">
@@ -169,6 +170,8 @@ export function RightDrawer() {
 
   // Placeholder content based on entityType
   const renderContent = () => {
+    if (copilotMode) return <CopilotPanel />
+
     if (!rightDrawer.entityType) return (
       <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
         No entity selected.
@@ -219,7 +222,7 @@ export function RightDrawer() {
             <X size={18} />
           </button>
         </div>
-        <div className="p-4 flex-1 overflow-y-auto">
+        <div className={`flex-1 overflow-hidden ${copilotMode ? '' : 'p-4 overflow-y-auto'}`}>
           {renderContent()}
         </div>
       </div>

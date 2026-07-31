@@ -22,11 +22,23 @@ export const useAppStore = create((set) => ({
     entityId: null,
   },
   openDrawer: (title, entityType, entityId) => set({
-    rightDrawer: { isOpen: true, title, entityType, entityId }
+    rightDrawer: { isOpen: true, title, entityType, entityId },
+    copilotMode: false // Switch to entity view
   }),
   closeDrawer: () => set((state) => ({
     rightDrawer: { ...state.rightDrawer, isOpen: false }
   })),
+
+  // Copilot State
+  copilotMode: false,
+  setCopilotMode: (isActive) => set((state) => ({ 
+    copilotMode: isActive,
+    // If activating copilot, ensure drawer is open
+    rightDrawer: isActive ? { ...state.rightDrawer, isOpen: true, title: 'Operations Copilot' } : state.rightDrawer
+  })),
+  copilotHistory: [],
+  addCopilotMessage: (msg) => set((state) => ({ copilotHistory: [...state.copilotHistory, msg] })),
+  clearCopilotHistory: () => set({ copilotHistory: [] }),
 
   // GIS Workspace State
   presentationMode: false,

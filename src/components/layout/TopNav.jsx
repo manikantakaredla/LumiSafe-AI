@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Search, Bell, User, Clock, ChevronDown } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 
-const ROLES = ['Commissioner', 'Electrical Supervisor', 'Field Engineer (Alpha)', 'Field Engineer (Beta)', 'City Operations', 'Police', 'Public', 'Administrator']
+const ROLES = ['Commissioner', 'Electrical Supervisor', 'City Operations', 'Administrator']
 
 export function TopNav() {
   const { toggleCommandPalette, currentRole, setCurrentRole, notifications } = useAppStore()
@@ -20,20 +20,20 @@ export function TopNav() {
     <header className="h-12 bg-background border-b flex items-center justify-between px-4 shrink-0">
       <div className="flex items-center gap-4">
         {/* Brand */}
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-primary rounded-sm flex items-center justify-center">
-            <span className="text-xs font-bold text-primary-foreground">GV</span>
-          </div>
-          <span className="font-semibold text-sm">LumiSafe AI</span>
-          <span className="text-xs text-muted-foreground border-l pl-2 ml-2 hidden md:inline-block">AI Operations Platform</span>
+        <div className="font-bold text-lg text-primary tracking-tight flex items-center gap-2">
+          <img src="/gvmc-logo.png" alt="GVMC Logo" className="w-7 h-7 object-contain bg-white rounded-full p-0.5" />
+          <span className="hidden sm:inline">LumiSafe Platform</span>
+        </div>
+        <div className="hidden md:flex bg-secondary/50 rounded-full px-3 py-1 text-xs font-mono text-muted-foreground border border-border/50 items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-success"></span> System Active
         </div>
       </div>
 
       {/* Center - Global Search / Command Palette Trigger */}
-      <div className="flex-1 max-w-md mx-4">
+      <div className="flex-1 max-w-md mx-4 flex items-center gap-2">
         <button
           onClick={toggleCommandPalette}
-          className="w-full flex items-center justify-between bg-surface border hover:border-border-strong text-muted-foreground px-3 py-1.5 rounded text-sm transition-colors"
+          className="flex-1 flex items-center justify-between bg-surface border hover:border-border-strong text-muted-foreground px-3 py-1.5 rounded text-sm transition-colors"
         >
           <div className="flex items-center gap-2">
             <Search size={16} />
@@ -83,11 +83,7 @@ export function TopNav() {
                     const roleToEmail = {
                       'Commissioner': 'commissioner@lumisafe.ai',
                       'Electrical Supervisor': 'electrical@lumisafe.ai',
-                      'Field Engineer (Alpha)': 'field@lumisafe.ai',
-                      'Field Engineer (Beta)': 'beta@lumisafe.ai',
                       'City Operations': 'ops@lumisafe.ai',
-                      'Police': 'police@lumisafe.ai',
-                      'Public': 'citizen@lumisafe.ai',
                       'Administrator': 'admin@lumisafe.ai'
                     };
                     const email = roleToEmail[role];

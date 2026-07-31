@@ -3,6 +3,25 @@ import { useAppStore } from '../store/useAppStore';
 
 let socket;
 
+// Simple frontend event bus for components to subscribe to socket events
+export const eventBus = {
+  listeners: {},
+  subscribe(event, callback) {
+    if (!this.listeners[event]) this.listeners[event] = [];
+    this.listeners[event].push(callback);
+    return {
+      unsubscribe: () => {
+        this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+      }
+    };
+  },
+  publish(event, payload) {
+    if (this.listeners[event]) {
+      this.listeners[event].forEach(cb => cb(payload));
+    }
+  }
+};
+
 export const initSocketClient = () => {
   if (socket) return socket;
 
@@ -10,10 +29,16 @@ export const initSocketClient = () => {
 
   socket.on('connect', () => {
     console.log('[Socket] Connected to real-time operations engine');
+    eventBus.publish('connect', {});
+  });
+  
+  socket.on('disconnect', () => {
+    eventBus.publish('disconnect', {});
   });
 
   socket.on('complaint.created', (payload) => {
     console.log('[Socket] complaint.created:', payload);
+    eventBus.publish('complaint.created', payload);
     const store = useAppStore.getState();
     const { entityId, payload: data } = payload;
     store.initPublicReport({
@@ -30,6 +55,7 @@ export const initSocketClient = () => {
 
   socket.on('complaint.updated', (payload) => {
     console.log('[Socket] complaint.updated:', payload);
+    eventBus.publish('complaint.updated', payload);
     if (payload.eventType === 'REPORT_CLASSIFIED') {
       const store = useAppStore.getState();
       const { entityId, payload: data } = payload;
@@ -42,6 +68,7 @@ export const initSocketClient = () => {
 
   socket.on('workorder.created', (payload) => {
     console.log('[Socket] workorder.created:', payload);
+    eventBus.publish('workorder.created', payload);
     const store = useAppStore.getState();
     const { entityId, payload: data } = payload;
     store.updateReportState(entityId, {
@@ -53,6 +80,7 @@ export const initSocketClient = () => {
 
   socket.on('workorder.updated', (payload) => {
     console.log('[Socket] workorder.updated:', payload);
+    eventBus.publish('workorder.updated', payload);
     const store = useAppStore.getState();
     const { entityId, payload: data } = payload;
     store.updateReportState(entityId, {
@@ -65,6 +93,7 @@ export const initSocketClient = () => {
 
   socket.on('timeline.updated', (payload) => {
     console.log('[Socket] timeline.updated:', payload);
+    eventBus.publish('timeline.updated', payload);
     const store = useAppStore.getState();
     const { entityId, payload: data } = payload;
     
@@ -93,6 +122,7 @@ export const initSocketClient = () => {
 
   socket.on('notification.created', (payload) => {
     console.log('[Socket] notification.created:', payload);
+    eventBus.publish('notification.created', payload);
     const store = useAppStore.getState();
     const { payload: data } = payload;
     store.addNotification({

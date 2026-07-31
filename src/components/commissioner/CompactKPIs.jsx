@@ -42,9 +42,9 @@ export function CompactKPIs() {
   ];
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
-      {KPIS.map(kpi => (
-        <div key={kpi.id} className="flex-1 min-w-[200px] bg-surface border border-border shadow-sm rounded-md p-3 flex items-center gap-3 transition-colors">
+    <div className="flex overflow-x-auto bg-surface border border-border shadow-sm rounded-md scrollbar-hide">
+      {KPIS.map((kpi, idx) => (
+        <div key={kpi.id} className={`flex-1 min-w-[180px] p-4 flex items-center gap-3 ${idx !== KPIS.length - 1 ? 'border-r border-border/50' : ''}`}>
           <div className={`p-2 bg-base rounded ${kpi.color}`}>
             <kpi.icon size={18} />
           </div>

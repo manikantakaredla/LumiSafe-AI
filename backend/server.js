@@ -22,7 +22,8 @@ import complaintRoutes from './src/modules/complaints/complaint.routes.js';
 import evidenceRoutes from './src/modules/evidence/evidence.routes.js';
 import workorderRoutes from './src/modules/workorders/workorders.routes.js';
 import analyticsRoutes from './src/modules/analytics/analytics.routes.js';
-
+import policeRoutes from './src/modules/police/police.routes.js';
+import copilotRoutes from './src/modules/copilot/copilot.routes.js';
 const app = express();
 const server = http.createServer(app);
 
@@ -48,7 +49,8 @@ app.use('/api/v1/complaints', complaintRoutes);
 app.use('/api/v1/evidence', evidenceRoutes);
 app.use('/api/v1/workorders', workorderRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
-
+app.use('/api/v1/police', policeRoutes);
+app.use('/api/v1/copilot', copilotRoutes);
 // Health Monitoring Endpoint
 app.get('/api/v1/health', (req, res) => {
   res.json({
