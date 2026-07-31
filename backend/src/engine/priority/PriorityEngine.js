@@ -7,7 +7,7 @@ class PriorityEngine {
   }
 
   async calculatePriority(eventData) {
-    const { entityId, payload } = eventData;
+    const { entityId, payload, correlationId } = eventData;
     let priority = 'Low';
     
     const cat = (payload.category || '').toLowerCase();
@@ -24,7 +24,7 @@ class PriorityEngine {
       await ComplaintRepository.updateById(entityId, { priority, status: 'AI Classified & Prioritized' });
       
       // Emit next event
-      await eventBus.publish(EVENTS.REPORT_CLASSIFIED, 'Complaint', entityId, { priority }, 'PriorityEngine');
+      await eventBus.publish(EVENTS.REPORT_CLASSIFIED, 'Complaint', entityId, { priority }, 'PriorityEngine', correlationId);
       
     } catch (err) {
       console.error('[PriorityEngine] Error:', err);

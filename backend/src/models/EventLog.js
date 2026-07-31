@@ -8,6 +8,7 @@ const eventLogSchema = new mongoose.Schema({
   payload: { type: mongoose.Schema.Types.Mixed }, // Arbitrary event data
   
   triggeredBy: { type: String, default: 'System' }, // e.g. User ID or 'AI Engine'
+  correlationId: { type: String },
   
   timestamp: { type: Date, default: Date.now }
 });

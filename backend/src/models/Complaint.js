@@ -23,8 +23,16 @@ const complaintSchema = new mongoose.Schema({
   wardId: { type: mongoose.Schema.Types.ObjectId, ref: 'Ward' },
   nearestAssetId: { type: mongoose.Schema.Types.ObjectId, ref: 'StreetLight' },
   
+  timeline: [{
+    status: String,
+    timestamp: { type: Date, default: Date.now }
+  }],
   aiExplanation: { type: mongoose.Schema.Types.ObjectId, ref: 'Recommendation' },
-  workOrderId: { type: mongoose.Schema.Types.ObjectId, ref: 'WorkOrder' }
+  workOrderId: { type: mongoose.Schema.Types.ObjectId, ref: 'WorkOrder' },
+  idempotencyKey: { type: String, unique: true, sparse: true },
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date },
+  deletedBy: { type: String }
 
 }, { timestamps: true });
 

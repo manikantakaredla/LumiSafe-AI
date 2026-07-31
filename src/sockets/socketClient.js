@@ -12,50 +12,44 @@ export const initSocketClient = () => {
     console.log('[Socket] Connected to real-time operations engine');
   });
 
-  socket.on('SYNC_STATE', (payload) => {
-    console.log('[Socket] Received SYNC_STATE:', payload);
+  socket.on('complaint.created', (payload) => {
+    console.log('[Socket] complaint.created:', payload);
     const store = useAppStore.getState();
+    const { entityId, payload: data } = payload;
+    store.initPublicReport({
+      id: entityId,
+      complaintId: data.complaintId,
+      category: data.category,
+      status: 'Report Submitted',
+      priority: 'Pending',
+      timestamp: new Date().toISOString(),
+      lat: data.lat,
+      lng: data.lng
+    });
+  });
 
-    // Porting DashboardSync logic to respond to Backend Events
-    switch (payload.eventType) {
-      case 'REPORT_CREATED': {
-        const { entityId, payload: data } = payload;
-        store.initPublicReport({
-          id: entityId,
-          complaintId: data.complaintId,
-          category: data.category,
-          status: 'Report Submitted',
-          priority: 'Pending',
-          timestamp: new Date().toISOString(),
-          lat: data.lat,
-          lng: data.lng
-        });
-        break;
-      }
-      
-      case 'REPORT_CLASSIFIED': {
-        const { entityId, payload: data } = payload;
-        store.updateReportState(entityId, { 
-          status: 'AI Classified & Prioritized', 
-          priority: data.priority 
-        });
-        break;
-      }
-      
-      case 'WORKORDER_CREATED': {
-        const { entityId, payload: data } = payload;
-        store.updateReportState(entityId, {
-          status: 'Assigned to Electrical Dept',
-          assignedTeam: 'Alpha Team (Auto)',
-          engineerStatus: 'Pending',
-          inventoryRequired: data.inventory
-        });
-        break;
-      }
-      
-      default:
-        break;
+  socket.on('complaint.updated', (payload) => {
+    console.log('[Socket] complaint.updated:', payload);
+    if (payload.eventType === 'REPORT_CLASSIFIED') {
+      const store = useAppStore.getState();
+      const { entityId, payload: data } = payload;
+      store.updateReportState(entityId, { 
+        status: 'AI Classified & Prioritized', 
+        priority: data.priority 
+      });
     }
+  });
+
+  socket.on('workorder.created', (payload) => {
+    console.log('[Socket] workorder.created:', payload);
+    const store = useAppStore.getState();
+    const { entityId, payload: data } = payload;
+    store.updateReportState(entityId, {
+      status: 'Assigned to Electrical Dept',
+      assignedTeam: 'Alpha Team (Auto)',
+      engineerStatus: 'Pending',
+      inventoryRequired: data.inventory
+    });
   });
 
   return socket;

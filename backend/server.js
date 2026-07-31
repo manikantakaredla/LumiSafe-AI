@@ -1,44 +1,65 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
+import config from './src/config/index.js';
 import { connectDB } from './src/config/db.js';
 import { initSocketGateway } from './src/sockets/socketGateway.js';
 import { initializeAIEngines } from './src/engine/index.js';
 
-// Import Routes
+// Middlewares
+import { setupSecurity, apiLimiter } from './src/middleware/security.js';
+import { correlationMiddleware } from './src/middleware/correlationMiddleware.js';
+import { responseHandler } from './src/middleware/responseHandler.js';
+import { globalErrorHandler } from './src/middleware/errorHandler.js';
+
+// Routes
 import complaintRoutes from './src/modules/complaints/complaint.routes.js';
 import evidenceRoutes from './src/modules/evidence/evidence.routes.js';
-
-dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 
-// Middleware
+// 1. Security & Core Middleware
+setupSecurity(app);
 app.use(cors());
-app.use(helmet());
-app.use(morgan('dev'));
 app.use(express.json());
+app.use(correlationMiddleware);
+app.use(responseHandler); // standardize responses
+app.use(morgan('dev'));   // Logging
 
 // Initialize Socket.IO
 initSocketGateway(server);
 
-// Routes
-app.use('/api/complaints', complaintRoutes);
-app.use('/api/evidence', evidenceRoutes);
+// Swagger Documentation
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'LumiSafe AI Backend Operational' });
+// V1 API Routes with Rate Limiting
+app.use('/api/v1', apiLimiter);
+app.use('/api/v1/complaints', complaintRoutes);
+app.use('/api/v1/evidence', evidenceRoutes);
+
+// Health Monitoring Endpoint
+app.get('/api/v1/health', (req, res) => {
+  res.json({
+    status: 'Operational',
+    uptime: process.uptime(),
+    memoryUsage: process.memoryUsage(),
+    version: '1.0.0'
+  });
 });
 
+// Global Error Handler
+app.use(globalErrorHandler);
+
 // Start Server
-const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   initializeAIEngines();
-  server.listen(PORT, () => {
-    console.log(`[SERVER] Running on port ${PORT}`);
+  server.listen(config.port, () => {
+    console.log(`[SERVER] Running on port ${config.port} | API Docs at /api-docs`);
   });
 });

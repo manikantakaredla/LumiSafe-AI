@@ -8,7 +8,7 @@ class RecommendationEngine {
   }
 
   async generateRecommendation(eventData) {
-    const { entityId, payload } = eventData;
+    const { entityId, payload, correlationId } = eventData;
     
     try {
       await new Promise(r => setTimeout(r, 600));
@@ -28,10 +28,10 @@ class RecommendationEngine {
         status: 'Assigned to Electrical Dept' 
       });
 
-      await eventBus.publish(EVENTS.RECOMMENDATION_GENERATED, 'Complaint', entityId, { recommendationId: rec._id }, 'RecommendationEngine');
+      await eventBus.publish(EVENTS.RECOMMENDATION_GENERATED, 'Complaint', entityId, { recommendationId: rec._id }, 'RecommendationEngine', correlationId);
       
       // For this workflow, also immediately generate a Work Order
-      await eventBus.publish(EVENTS.WORKORDER_CREATED, 'Complaint', entityId, { inventory: ['LED Lamp (120W)', 'Waterproof Seal'] }, 'WorkflowEngine');
+      await eventBus.publish(EVENTS.WORKORDER_CREATED, 'Complaint', entityId, { inventory: ['LED Lamp (120W)', 'Waterproof Seal'] }, 'WorkflowEngine', correlationId);
 
     } catch (err) {
       console.error('[RecommendationEngine] Error:', err);

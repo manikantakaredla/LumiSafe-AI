@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: LumiSafe AI Enterprise API
+  version: 1.0.0
+  description: The core backend platform powering LumiSafe AI city operations.
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Development Server
+paths:
+  /health:
+    get:
+      summary: Health Monitoring Endpoint
+      responses:
+        '200':
+          description: Operational status metrics
+  /complaints/submit:
+    post:
+      summary: Submit a new citizen report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category
+                - lat
+                - lng
+              properties:
+                category:
+                  type: string
+                  example: "Broken Street Light"
+                lat:
+                  type: number
+                lng:
+                  type: number
+      responses:
+        '201':
+          description: Report submitted successfully

@@ -3,8 +3,8 @@ import { EventLog } from '../../models/EventLog.js';
 import { broadcastEvent } from '../../sockets/socketGateway.js';
 
 class OperationsEventBus extends EventEmitter {
-  async publish(eventType, entityModel, entityId, payload, triggeredBy = 'System') {
-    console.log(`[EVENT BUS] ⚡ ${eventType} -> ${entityModel}:${entityId}`);
+  async publish(eventType, entityModel, entityId, payload, triggeredBy = 'System', correlationId = null) {
+    console.log(`[EVENT BUS] ⚡ ${eventType} -> ${entityModel}:${entityId} [Correlation: ${correlationId}]`);
     
     try {
       // 1. Persist to MongoDB
@@ -13,14 +13,27 @@ class OperationsEventBus extends EventEmitter {
         entityModel,
         entityId,
         payload,
-        triggeredBy
+        triggeredBy,
+        correlationId
       });
 
       // 2. Emit native Node event for AI Engines to catch asynchronously
-      this.emit(eventType, { entityId, entityModel, payload, triggeredBy });
+      this.emit(eventType, { entityId, entityModel, payload, triggeredBy, correlationId });
 
-      // 3. Broadcast to WebSockets (React Clients)
-      broadcastEvent('SYNC_STATE', { eventType, entityModel, entityId, payload });
+      // 3. Broadcast to WebSockets (React Clients) using domain-specific topics
+      const topicMap = {
+        'REPORT_CREATED': 'complaint.created',
+        'REPORT_CLASSIFIED': 'complaint.updated',
+        'WORKORDER_CREATED': 'workorder.created',
+        'WORKORDER_ASSIGNED': 'workorder.updated',
+        'EVIDENCE_UPLOADED': 'evidence.uploaded',
+        'GPS_VERIFIED': 'verification.completed',
+        'NOTIFICATION_CREATED': 'notification.created',
+        'STATUS_CHANGED': 'timeline.updated'
+      };
+      
+      const topic = topicMap[eventType] || 'system.event';
+      broadcastEvent(topic, { eventType, entityModel, entityId, payload });
       
     } catch (err) {
       console.error(`[EVENT BUS] Failed to publish ${eventType}:`, err);

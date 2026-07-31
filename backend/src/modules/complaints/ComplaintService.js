@@ -2,12 +2,18 @@ import ComplaintRepository from './ComplaintRepository.js';
 import { eventBus, EVENTS } from '../../engine/eventbus/eventBus.js';
 
 class ComplaintService {
-  async submitReport(data) {
+  async submitReport(data, idempotencyKey, correlationId) {
+    if (idempotencyKey) {
+      const existing = await ComplaintRepository.model.findOne({ idempotencyKey });
+      if (existing) return existing;
+    }
+
     const complaintId = `REP-${Math.floor(Math.random() * 100000)}`;
     
     const newComplaint = await ComplaintRepository.create({
       complaintId,
       category: data.category,
+      idempotencyKey,
       description: data.description,
       location: {
         type: 'Point',
@@ -21,7 +27,7 @@ class ComplaintService {
       category: newComplaint.category,
       lat: data.lat,
       lng: data.lng
-    });
+    }, 'System', correlationId);
 
     return newComplaint;
   }
