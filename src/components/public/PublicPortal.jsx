@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LightbulbOff, ShieldAlert, Map, Clock, CheckCircle2, ArrowLeft, Loader2, Search } from 'lucide-react';
+import { LightbulbOff, ShieldAlert, Map, Clock, CheckCircle2, ArrowLeft, Loader2, Search, MapPin, Camera, UploadCloud } from 'lucide-react';
 import { GVMC_ZONES } from '@/lib/constants';
 
 export function PublicPortal() {
@@ -190,8 +190,22 @@ export function PublicPortal() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Street Name / Landmark</label>
-                  <input type="text" required placeholder="e.g. Beach Road near YMCA" className="w-full bg-base border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Location Details</label>
+                  <div className="flex gap-2">
+                    <input type="text" required placeholder="e.g. Beach Road near YMCA" className="flex-1 bg-base border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                    <button type="button" className="bg-secondary text-foreground px-4 py-2 rounded-lg border border-border flex items-center gap-2 hover:bg-secondary/80 transition-colors text-xs font-bold whitespace-nowrap">
+                       <MapPin size={14} className="text-primary"/> Use GPS
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Photo Evidence (Optional)</label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-secondary/20 transition-colors cursor-pointer">
+                     <Camera size={24} className="text-muted-foreground mb-2" />
+                     <p className="text-xs font-semibold text-foreground">Click to upload or take a photo</p>
+                     <p className="text-[10px] text-muted-foreground mt-1">Supports JPG, PNG (Max 5MB)</p>
+                  </div>
                 </div>
 
                 <div>
@@ -258,7 +272,21 @@ export function PublicPortal() {
 
                 <div>
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Location Details</label>
-                  <input type="text" required placeholder="Exact location..." className="w-full bg-base border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-destructive" />
+                  <div className="flex gap-2">
+                    <input type="text" required placeholder="Exact location..." className="flex-1 bg-base border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-destructive" />
+                    <button type="button" className="bg-secondary text-foreground px-4 py-2 rounded-lg border border-border flex items-center gap-2 hover:bg-secondary/80 transition-colors text-xs font-bold whitespace-nowrap">
+                       <MapPin size={14} className="text-destructive"/> Use GPS
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Photo Evidence (Optional)</label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-secondary/20 transition-colors cursor-pointer">
+                     <Camera size={24} className="text-muted-foreground mb-2" />
+                     <p className="text-xs font-semibold text-foreground">Click to upload or take a photo</p>
+                     <p className="text-[10px] text-muted-foreground mt-1">Supports JPG, PNG (Max 5MB)</p>
+                  </div>
                 </div>
 
                 <div>

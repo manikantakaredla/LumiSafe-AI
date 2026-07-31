@@ -10,7 +10,9 @@ import {
   Lightbulb,
   LogOut,
   BrainCircuit,
-  MessageSquareWarning
+  MessageSquareWarning,
+  Activity,
+  HardHat
 } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
@@ -18,6 +20,8 @@ import { cn } from '@/lib/utils'
 const NAV_ITEMS = [
   { name: 'Dashboard', path: '/app/dashboard', icon: Building2, roles: ['Commissioner', 'Administrator'] },
   { name: 'Street Lights', path: '/app/street-lights', icon: Lightbulb, roles: ['Commissioner', 'Electrical Supervisor', 'Administrator'] },
+  { name: 'IoT Telemetry', path: '/app/iot', icon: Activity, roles: ['Commissioner', 'Electrical Supervisor', 'Administrator'] },
+  { name: 'Field Engineer', path: '/app/field-engineer', icon: HardHat, roles: ['Electrical Supervisor', 'Administrator'] },
   { name: 'Joint Operations', path: '/app/operations', icon: Shield, roles: ['Commissioner', 'City Operations', 'Administrator'] },
   { name: 'Resource Optimizer', path: '/app/optimizer', icon: BrainCircuit, roles: ['Commissioner', 'Administrator'] },
   { name: 'Copilot', path: '/app/copilot', icon: MessageSquareWarning, roles: ['Commissioner', 'Administrator'] },

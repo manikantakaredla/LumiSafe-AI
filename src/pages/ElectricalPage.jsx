@@ -32,7 +32,7 @@ export function ElectricalPage() {
   const complaints = [
     { id: 'CMP-8821', ward: 'Ward 18', type: 'Pole Damaged', status: 'Pending', time: '10 mins ago' },
     { id: 'CMP-8820', ward: 'Ward 4', type: 'Flickering', status: 'Assigned', time: '45 mins ago' },
-    { id: 'CMP-8819', ward: 'Ward 11', type: 'Light Not Working', status: 'Completed', time: '2 hours ago' },
+    { id: 'CMP-8819', ward: 'Ward 11', type: 'Light Not Working', status: 'Pending Verification', time: '2 hours ago' },
   ];
 
   return (
@@ -176,17 +176,25 @@ export function ElectricalPage() {
                </div>
                <div className="flex-1 overflow-auto p-2 space-y-2">
                   {complaints.map((c, i) => (
-                     <div key={c.id} className="bg-base border border-border p-2 rounded-lg flex justify-between items-start shadow-sm transition-all">
-                        <div>
-                           <p className="text-[10px] font-bold text-muted-foreground">{c.id} • {c.ward}</p>
-                           <p className="text-xs font-bold text-foreground mt-0.5">{c.type}</p>
+                     <div key={c.id} className="bg-base border border-border p-2 rounded-lg flex flex-col shadow-sm transition-all">
+                        <div className="flex justify-between items-start">
+                          <div>
+                             <p className="text-[10px] font-bold text-muted-foreground">{c.id} • {c.ward}</p>
+                             <p className="text-xs font-bold text-foreground mt-0.5">{c.type}</p>
+                          </div>
+                          <div className="text-right">
+                             <span className={`text-[10px] font-bold uppercase ${c.status === 'Completed' ? 'text-success' : c.status === 'Pending Verification' ? 'text-info' : (i === 0 && deployed) || c.status === 'Assigned' ? 'text-primary' : 'text-warning'}`}>
+                               {(i === 0 && deployed) ? 'Assigned' : c.status}
+                             </span>
+                             <p className="text-[10px] text-muted-foreground flex items-center justify-end gap-1 mt-1"><Clock size={10}/> {c.time}</p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                           <span className={`text-[10px] font-bold uppercase ${c.status === 'Completed' ? 'text-success' : (i === 0 && deployed) || c.status === 'Assigned' ? 'text-primary' : 'text-warning'}`}>
-                             {(i === 0 && deployed) ? 'Assigned' : c.status}
-                           </span>
-                           <p className="text-[10px] text-muted-foreground flex items-center justify-end gap-1 mt-1"><Clock size={10}/> {c.time}</p>
-                        </div>
+                        {c.status === 'Pending Verification' && (
+                           <div className="mt-2 pt-2 border-t border-border flex gap-2 animate-in slide-in-from-top-1 duration-300">
+                             <button className="flex-1 bg-success text-success-foreground text-[10px] font-bold py-1.5 rounded hover:bg-success/90 transition-colors" onClick={(e) => { e.target.parentElement.parentElement.style.opacity = '0.5'; e.target.parentElement.innerHTML = '<span class="text-xs text-success font-bold mx-auto">Verified & Closed</span>' }}>Verify & Close</button>
+                             <button className="flex-1 bg-destructive text-destructive-foreground text-[10px] font-bold py-1.5 rounded hover:bg-destructive/90 transition-colors" onClick={(e) => alert('Work rejected. Team notified to re-evaluate.')}>Reject</button>
+                           </div>
+                        )}
                      </div>
                   ))}
                </div>

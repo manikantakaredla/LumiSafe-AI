@@ -8,6 +8,8 @@ import { ElectricalPage } from '@/pages/ElectricalPage'
 import { CityOperationsPage } from '@/pages/CityOperationsPage'
 import { AiResourceOptimizerPage } from '@/pages/AiResourceOptimizerPage'
 import { CopilotPage } from '@/pages/CopilotPage'
+import { IotStreetlightsPage } from '@/pages/IotStreetlightsPage'
+import { FieldEngineerPage } from '@/pages/FieldEngineerPage'
 import { ReportsPage } from '@/pages/ReportsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { LandingPage } from '@/pages/LandingPage'
@@ -32,6 +34,8 @@ function App() {
             <Route index element={<RoleBasedRedirect />} />
             <Route path="dashboard" element={<CommissionerPage />} />
             <Route path="street-lights" element={<ElectricalPage />} />
+            <Route path="iot" element={<IotStreetlightsPage />} />
+            <Route path="field-engineer" element={<FieldEngineerPage />} />
             <Route path="operations" element={<CityOperationsPage />} />
             <Route path="optimizer" element={<AiResourceOptimizerPage />} />
             <Route path="copilot" element={<CopilotPage />} />
