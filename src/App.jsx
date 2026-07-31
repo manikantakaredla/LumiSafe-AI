@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { ModulePage } from '@/pages/ModulePage'
 import { CommissionerPage } from '@/pages/CommissionerPage'
+import { PublicPortal } from '@/components/public/PublicPortal'
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
             <Route path="electrical" element={<ModulePage title="Electrical Dept" description="Manage street lights and electrical infrastructure." />} />
             <Route path="city-operations" element={<ModulePage title="City Operations" description="Real-time multi-department monitoring." />} />
             <Route path="police" element={<ModulePage title="Police" description="Security and incident management." />} />
-            <Route path="public" element={<ModulePage title="Public" description="Citizen complaints and feedback." />} />
+            <Route path="public" element={<PublicPortal />} />
             <Route path="admin" element={<ModulePage title="Administrator" description="System configuration and user management." />} />
           </Route>
         </Routes>

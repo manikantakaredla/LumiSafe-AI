@@ -6,6 +6,97 @@ import { cn } from '@/lib/utils'
 export function RightDrawer() {
   const { rightDrawer, closeDrawer } = useAppStore()
 
+  const renderWard = () => (
+    <div className="space-y-4 text-sm">
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Safety Score</span>
+        <span className="font-mono text-xl text-success font-medium">88.2</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Pending Complaints</span>
+        <span className="font-mono text-destructive">14</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Broken Lights</span>
+        <span className="font-mono text-warning">8</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Required Budget</span>
+        <span className="font-mono text-foreground">₹ 1,45,000</span>
+      </div>
+      <div className="bg-primary/10 border border-primary/20 p-3 rounded">
+        <p className="text-[11px] text-primary uppercase font-bold mb-1">AI Recommendation</p>
+        <p className="text-xs text-foreground">Deploy 2 additional Police Patrols to Sector 3 to mitigate rising incidents. Schedule immediate electrical maintenance.</p>
+        <div className="mt-2 pt-2 border-t border-primary/10 flex justify-between text-[11px]">
+          <span className="text-muted-foreground font-mono">CONF: 94%</span>
+          <span className="text-success font-medium uppercase tracking-wider">+4.5% Safety</span>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderStreetLight = () => (
+    <div className="space-y-4 text-sm">
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Status</span>
+        <span className="font-mono text-destructive flex items-center gap-1.5"><span className="w-2 h-2 bg-destructive rounded-sm"/> FAILED</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Assigned Team</span>
+        <span className="font-mono text-info font-medium">Alpha Electrical</span>
+      </div>
+      <div className="bg-surface border rounded p-3 text-xs">
+        <p className="text-muted-foreground mb-1 uppercase text-[10px] font-semibold tracking-wider">Complaint History</p>
+        <p className="text-foreground">Reported dead on 12/Oct by Citizen App. Verified by AI vision node.</p>
+      </div>
+      <div className="flex gap-2">
+         <button className="flex-1 bg-primary text-primary-foreground py-1.5 rounded text-xs font-semibold hover:bg-primary/90 transition-colors">Dispatch Team</button>
+      </div>
+    </div>
+  )
+
+  const renderIncident = () => (
+    <div className="space-y-4 text-sm">
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Priority</span>
+        <span className="font-mono text-destructive font-bold uppercase">Critical</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Time Logged</span>
+        <span className="font-mono text-foreground">12:44 PM</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Assigned Officer</span>
+        <span className="font-mono text-info font-medium">Hawk Unit 1</span>
+      </div>
+      <div className="bg-surface border rounded p-3 text-xs">
+        <p className="text-muted-foreground mb-1 uppercase text-[10px] font-semibold tracking-wider">Evidence</p>
+        <div className="w-full h-24 bg-secondary flex items-center justify-center rounded text-muted-foreground/50 border border-border/50">
+           [Image Placeholder]
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderTeam = () => (
+    <div className="space-y-4 text-sm">
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Current Activity</span>
+        <span className="font-mono text-success">En Route to WO-14</span>
+      </div>
+      <div className="flex justify-between items-baseline border-b border-border/50 pb-2">
+        <span className="text-muted-foreground uppercase text-[11px] font-semibold">Today's Progress</span>
+        <span className="font-mono text-foreground">4 / 6 Tasks Completed</span>
+      </div>
+      <div className="bg-surface border rounded p-3 text-xs">
+        <p className="text-muted-foreground mb-2 uppercase text-[10px] font-semibold tracking-wider">Assigned Route</p>
+        <div className="flex items-center gap-2 mb-1"><span className="w-2 h-2 rounded-full bg-success"/> <span className="font-mono text-muted-foreground">WO-11 (Done)</span></div>
+        <div className="flex items-center gap-2 mb-1"><span className="w-2 h-2 rounded-full bg-warning"/> <span className="font-mono text-foreground">WO-14 (In Progress)</span></div>
+        <div className="flex items-center gap-2 mb-1"><span className="w-2 h-2 rounded-full border border-border"/> <span className="font-mono text-muted-foreground">WO-16 (Pending)</span></div>
+      </div>
+    </div>
+  )
+
   // Placeholder content based on entityType
   const renderContent = () => {
     if (!rightDrawer.entityType) return (
@@ -14,43 +105,19 @@ export function RightDrawer() {
       </div>
     )
 
-    return (
-      <div className="space-y-4">
-        <div className="border border-border rounded p-3 bg-surface">
-          <p className="text-xs text-muted-foreground uppercase font-semibold">Entity Details</p>
-          <div className="mt-2 text-sm">
-            <div className="flex justify-between py-1 border-b border-border/50">
-              <span className="text-muted-foreground">ID</span>
-              <span className="font-mono text-foreground">{rightDrawer.entityId || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-border/50">
-              <span className="text-muted-foreground">Type</span>
-              <span className="text-foreground capitalize">{rightDrawer.entityType}</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Status</span>
-              <span className="text-success flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-success inline-block"></span> Active
-              </span>
-            </div>
-          </div>
+    switch(rightDrawer.entityType) {
+      case 'Ward': return renderWard()
+      case 'Street Light': return renderStreetLight()
+      case 'Incident': 
+      case 'Complaint': return renderIncident()
+      case 'Repair Team':
+      case 'Police Patrol': return renderTeam()
+      default: return (
+        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+          No operational data available for this entity type.
         </div>
-        <div className="border border-border rounded p-3 bg-surface">
-          <p className="text-xs text-muted-foreground uppercase font-semibold">Quick Actions</p>
-          <div className="mt-2 space-y-2">
-            <button className="w-full text-left px-2 py-1.5 text-sm bg-secondary hover:bg-secondary/80 rounded transition-colors">
-              Update Status
-            </button>
-            <button className="w-full text-left px-2 py-1.5 text-sm bg-secondary hover:bg-secondary/80 rounded transition-colors">
-              Assign to Team
-            </button>
-            <button className="w-full text-left px-2 py-1.5 text-sm bg-destructive/10 text-destructive hover:bg-destructive/20 rounded transition-colors">
-              Escalate Issue
-            </button>
-          </div>
-        </div>
-      </div>
-    )
+      )
+    }
   }
 
   return (

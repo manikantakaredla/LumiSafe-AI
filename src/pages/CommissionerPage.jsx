@@ -2,7 +2,7 @@ import React from 'react'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { OperationsBrief } from '@/components/commissioner/OperationsBrief'
 import { CompactKPIs } from '@/components/commissioner/CompactKPIs'
-import { GisPanel } from '@/components/commissioner/GisPanel'
+import { GisWorkspace } from '@/components/gis/GisWorkspace'
 import { OperationsTimeline } from '@/components/commissioner/OperationsTimeline'
 import { AiRecommendations } from '@/components/commissioner/AiRecommendations'
 import { SystemHealth } from '@/components/commissioner/SystemHealth'
@@ -25,9 +25,9 @@ export function CommissionerPage() {
       </section>
 
       {/* Section 3: GIS (70%) & Timeline (30%) */}
-      <section className="flex flex-col lg:flex-row gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150 fill-mode-backwards">
-        <div className="lg:w-[70%]">
-          <GisPanel />
+      <section className="flex flex-col lg:flex-row gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150 fill-mode-backwards h-[500px]">
+        <div className="lg:w-[70%] h-full">
+          <GisWorkspace />
         </div>
         <div className="lg:w-[30%] h-full">
           <OperationsTimeline />

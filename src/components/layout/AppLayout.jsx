@@ -4,8 +4,23 @@ import { Sidebar } from './Sidebar'
 import { TopNav } from './TopNav'
 import { RightDrawer } from './RightDrawer'
 import { CommandPalette } from '../CommandPalette'
+import { useAppStore } from '@/store/useAppStore'
 
 export function AppLayout() {
+  const { presentationMode } = useAppStore()
+
+  if (presentationMode) {
+    return (
+      <div className="flex flex-col h-screen w-full bg-background text-foreground overflow-hidden">
+        <main className="flex-1 flex flex-col relative overflow-hidden bg-base">
+          <Outlet />
+        </main>
+        <RightDrawer />
+        <CommandPalette />
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col h-screen w-full bg-background text-foreground overflow-hidden">
       <TopNav />
