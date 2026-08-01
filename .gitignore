@@ -28,6 +28,4 @@ dist-ssr
 .env.*
 *.env
 
-backend/.env
-frontend/.env
-client/.env
+git status
