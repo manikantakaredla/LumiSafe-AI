@@ -6,7 +6,7 @@ import express from 'express';
 // Standard rate limiter for all APIs
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window`
+  max: 100000, // Increased limit for real-time dashboard auto-refresh and testing
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -15,7 +15,7 @@ export const apiLimiter = rateLimit({
 // Stricter rate limiter for sensitive endpoints
 export const strictLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 20, 
+  max: 5000, 
   message: 'Too many sensitive requests from this IP.',
 });
 

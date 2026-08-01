@@ -44,37 +44,44 @@ export function LandingPage() {
 
       {/* Hero Section */}
       <main className="flex-1 flex flex-col">
-        <section className="relative py-32 px-8 overflow-hidden">
-          {/* Background Image with Dark Overlay */}
+        <section className="relative py-36 px-8 overflow-hidden bg-slate-900">
+          {/* High-Resolution Visakhapatnam Smart City Night Grid Background */}
           <div 
-            className="absolute inset-0 bg-cover bg-center z-0 opacity-30" 
-            style={{ backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/4/46/Aerial_View_of_Visakhapatnam.jpg')" }}
+            className="absolute inset-0 bg-cover bg-center z-0 scale-105 transition-all duration-10000" 
+            style={{ backgroundImage: "url('/vizag_bg.png')" }}
           >
           </div>
-          <div className="absolute inset-0 bg-slate-900/80 z-0"></div>
+          {/* Balanced Twilight & Command Control Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/65 to-slate-950/90 z-0"></div>
+          {/* Subtle GIS decision grid texture */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#33415515_1px,transparent_1px),linear-gradient(to_bottom,#33415515_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_50%,#000_70%,transparent_100%)] z-0 pointer-events-none"></div>
 
           <div className="max-w-5xl mx-auto flex flex-col items-center text-center relative z-10">
-            <h2 className="text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-md">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-200 text-xs font-semibold mb-6 backdrop-blur-md shadow-inner">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>GVMC & Visakhapatnam Police CCC Intelligence Interlock Online</span>
+            </div>
+
+            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-lg">
               Identify High-Risk Wards <br/> Before Incidents Increase
             </h2>
-            <p className="text-xl text-slate-200 mb-12 max-w-2xl leading-relaxed font-light drop-shadow">
-              Correlating street light failures with public safety incidents to enable data-driven resource allocation.
+            <p className="text-xl text-slate-200 mb-12 max-w-2xl leading-relaxed font-normal drop-shadow">
+              Correlating street light failures with public safety incidents to enable data-driven municipal resource allocation.
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-6">
               <button 
                 onClick={() => navigate('/public')} 
-                className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-4 rounded-md font-medium text-base flex items-center gap-3 transition-colors shadow-sm"
+                className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-lg font-bold text-base flex items-center gap-3 transition-all shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
               >
-                <LightbulbOff size={20} /> Report Street Light
+                <LightbulbOff size={22} /> Report Street Light
               </button>
               <button 
                 onClick={() => navigate('/public')} 
-                className="bg-red-600 text-white hover:bg-red-700 px-8 py-4 rounded-md font-medium text-base flex items-center gap-3 transition-colors shadow-sm"
+                className="bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-lg font-bold text-base flex items-center gap-3 transition-all shadow-lg hover:shadow-red-500/25 hover:-translate-y-0.5"
               >
-                <ShieldAlert size={20} /> Report Safety Concern
+                <ShieldAlert size={22} /> Report Safety Concern
               </button>
-              
             </div>
           </div>
         </section>

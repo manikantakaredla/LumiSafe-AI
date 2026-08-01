@@ -26,7 +26,8 @@ const config = {
   },
 
   ai: {
-    confidenceThreshold: 85
+    confidenceThreshold: 85,
+    geminiApiKey: process.env.GEMINI_API_KEY
   }
 };
 

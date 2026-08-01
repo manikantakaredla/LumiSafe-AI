@@ -25,6 +25,7 @@ import analyticsRoutes from './src/modules/analytics/analytics.routes.js';
 import policeRoutes from './src/modules/police/police.routes.js';
 import copilotRoutes from './src/modules/copilot/copilot.routes.js';
 import iotRoutes from './src/modules/iot/iot.routes.js';
+import gisRoutes from './src/modules/gis/gis.routes.js';
 const app = express();
 const server = http.createServer(app);
 
@@ -53,6 +54,7 @@ app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/police', policeRoutes);
 app.use('/api/v1/copilot', copilotRoutes);
 app.use('/api/v1/iot', iotRoutes);
+app.use('/api/v1/gis', gisRoutes);
 // Health Monitoring Endpoint
 app.get('/api/v1/health', (req, res) => {
   res.json({

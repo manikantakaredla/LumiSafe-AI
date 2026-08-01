@@ -61,23 +61,23 @@ export function Sidebar() {
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 scrollbar-thin scrollbar-thumb-border">
         {visibleNavItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-semibold",
+                "group flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 text-sm font-bold",
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-md font-extrabold"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground hover:translate-x-1"
               )
             }
             title={isSidebarCollapsed ? item.name : undefined}
           >
-            <item.icon size={18} className="shrink-0" />
-            {!isSidebarCollapsed && <span className="truncate">{item.name}</span>}
+            <item.icon size={18} className="shrink-0 transition-transform group-hover:scale-110 duration-200" />
+            {!isSidebarCollapsed && <span className="truncate tracking-wide">{item.name}</span>}
           </NavLink>
         ))}
       </nav>

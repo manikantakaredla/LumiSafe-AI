@@ -13,6 +13,15 @@ export const getAll = async (req, res, next) => {
   }
 };
 
+export const getTeams = async (req, res, next) => {
+  try {
+    const teams = await RepairTeam.find();
+    res.status(200).json({ success: true, data: teams });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getById = async (req, res, next) => {
   try {
     const order = await WorkOrder.findOne({ workOrderId: req.params.id }).populate('complaintId').populate('assignedTeamId');

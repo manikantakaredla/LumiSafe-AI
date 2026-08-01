@@ -1,9 +1,27 @@
 import { create } from 'zustand'
 
 export const useAppStore = create((set) => ({
-  // Role Switcher
-  currentRole: 'Commissioner',
-  setCurrentRole: (role) => set({ currentRole: role }),
+  // Auth & Role Switcher
+  currentUser: JSON.parse(localStorage.getItem('lumi_user') || 'null'),
+  authToken: localStorage.getItem('lumi_token') || null,
+  currentRole: localStorage.getItem('lumi_role') || 'Commissioner',
+  setAuth: (user, token) => {
+    if (user && token) {
+      localStorage.setItem('lumi_user', JSON.stringify(user));
+      localStorage.setItem('lumi_token', token);
+      localStorage.setItem('lumi_role', user.role);
+      set({ currentUser: user, authToken: token, currentRole: user.role });
+    } else {
+      localStorage.removeItem('lumi_user');
+      localStorage.removeItem('lumi_token');
+      localStorage.removeItem('lumi_role');
+      set({ currentUser: null, authToken: null, currentRole: 'Public' });
+    }
+  },
+  setCurrentRole: (role) => {
+    localStorage.setItem('lumi_role', role);
+    set({ currentRole: role });
+  },
 
   // Sidebar State
   isSidebarCollapsed: false,
