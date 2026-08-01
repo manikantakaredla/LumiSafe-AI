@@ -1,53 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAppStore } from '@/store/useAppStore';
-import { Shield, AlertCircle, Lock, UserCheck, ArrowRight } from 'lucide-react';
+import { Shield, AlertCircle, Lock, UserCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { setAuth, setCurrentRole } = useAppStore();
   
-  const [selectedPreset, setSelectedPreset] = useState('commissioner@gvmc.gov.in');
   const [email, setEmail] = useState('commissioner@gvmc.gov.in');
   const [password, setPassword] = useState('password123');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Real seeded accounts from MongoDB Atlas DB
-  const PRESET_ACCOUNTS = [
-    { name: 'Dr. A. Mallikarjuna, IAS (City Commissioner)', email: 'commissioner@gvmc.gov.in', role: 'Commissioner', targetRoute: '/app/dashboard' },
-    { name: 'K. Ramesh (Superintending Engineer)', email: 'electrical.se@gvmc.gov.in', role: 'Electrical Supervisor', targetRoute: '/app/street-lights' },
-    { name: 'P. Suresh (Team Alpha Field Engineer)', email: 'alpha@gvmc.gov.in', role: 'Field Engineer', targetRoute: '/app/field-engineer' },
-    { name: 'GVMC Command & Control Centre (CCC)', email: 'ccc.ops@gvmc.gov.in', role: 'City Operations', targetRoute: '/app/operations' },
-    { name: 'Sri Shanka Bratha Bagchi, IPS (Police CP)', email: 'police.cp@gvmc.gov.in', role: 'Police', targetRoute: '/app/operations' },
-    { name: 'MVP Colony Police Station (SHO)', email: 'mvpu.police@gvmc.gov.in', role: 'Police', targetRoute: '/app/operations' },
-    { name: 'Public Citizen Portal (No Login Required)', email: 'citizen@gmail.com', role: 'Public', targetRoute: '/public' },
-    { name: 'Custom Login (Enter manually below)', email: 'custom', role: 'Admin', targetRoute: '/app/dashboard' }
-  ];
-
-  const handlePresetChange = (val) => {
-    setSelectedPreset(val);
-    setErrorMessage('');
-    if (val === 'custom') {
-      setEmail('');
-      setPassword('');
-    } else if (val === 'citizen@gmail.com') {
-      navigate('/public');
-    } else {
-      setEmail(val);
-      setPassword('password123');
-    }
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
-
-    if (selectedPreset === 'citizen@gmail.com' || email === 'citizen@gmail.com') {
-      navigate('/public');
-      return;
-    }
 
     try {
       const res = await fetch('http://localhost:5000/api/v1/auth/login', {
@@ -67,12 +35,18 @@ export function LoginPage() {
       setAuth(user, token);
       if (user.role) setCurrentRole(user.role);
       
-      // Determine correct landing view
-      if (user.role === 'Commissioner' || user.role === 'Executive') navigate('/app/dashboard');
-      else if (user.role === 'Electrical Supervisor' || user.role === 'Electrical') navigate('/app/street-lights');
-      else if (user.role === 'Field Engineer') navigate('/app/field-engineer');
-      else if (user.role === 'Police' || user.role === 'City Operations') navigate('/app/operations');
-      else navigate('/app/dashboard');
+      // Automatic Role-Based Intelligent Routing
+      if (user.role === 'Commissioner' || user.role === 'Executive' || user.role === 'Admin' || user.role === 'Administrator') {
+        navigate('/app/dashboard');
+      } else if (user.role === 'Electrical Supervisor' || user.role === 'Electrical') {
+        navigate('/app/street-lights');
+      } else if (user.role === 'Field Engineer') {
+        navigate('/app/field-engineer');
+      } else if (user.role === 'Police' || user.role === 'City Operations') {
+        navigate('/app/operations');
+      } else {
+        navigate('/app/dashboard');
+      }
 
     } catch (err) {
       console.error('[Auth Error]', err);
@@ -83,39 +57,28 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-base flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-surface border border-border shadow-md rounded-md overflow-hidden">
+    <div className="min-h-screen bg-base flex flex-col items-center justify-center p-4 font-sans text-foreground">
+      <div className="w-full max-w-md bg-surface border border-border shadow-lg rounded-xl overflow-hidden transition-all">
         
-        <div className="bg-primary p-6 flex flex-col items-center text-center border-b border-border">
-          <Shield className="text-primary-foreground mb-3" size={48} />
-          <h1 className="font-bold text-xl text-primary-foreground tracking-tight">GVMC Secure Cloud Auth</h1>
-          <p className="text-primary-foreground/80 text-xs mt-1">Smart Street Lighting & Crime Intelligence Platform</p>
+        <div className="bg-primary p-7 flex flex-col items-center text-center border-b border-border">
+          <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-3 border border-white/20 shadow-inner">
+            <Shield className="text-primary-foreground" size={34} />
+          </div>
+          <h1 className="font-extrabold text-2xl text-primary-foreground tracking-tight">GVMC Officer Portal</h1>
+          <p className="text-primary-foreground/80 text-xs mt-1 font-medium">LumiSafe Decision Intelligence Command</p>
         </div>
 
-        <form onSubmit={handleLogin} className="p-6 space-y-4">
+        <form onSubmit={handleLogin} className="p-7 space-y-5">
           
           {errorMessage && (
-            <div className="bg-destructive/10 border border-destructive text-destructive px-3 py-2.5 rounded text-xs flex items-center gap-2 font-semibold">
-              <AlertCircle size={16} className="shrink-0" />
+            <div className="bg-destructive/10 border border-destructive/80 text-destructive p-3 rounded-lg text-xs flex items-center gap-2.5 font-bold animate-in fade-in">
+              <AlertCircle size={17} className="shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Select Official Designation</label>
-            <select 
-              value={selectedPreset}
-              onChange={(e) => handlePresetChange(e.target.value)}
-              className="w-full bg-base border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary font-medium"
-            >
-              {PRESET_ACCOUNTS.map(r => (
-                <option key={r.email} value={r.email}>{r.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Official Email ID</label>
+            <label className="block text-xs font-extrabold text-muted-foreground uppercase tracking-wider mb-2">Official Email ID</label>
             <div className="relative">
               <input 
                 type="email" 
@@ -123,14 +86,14 @@ export function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@gvmc.gov.in"
-                className="w-full bg-base border border-border rounded pl-3 pr-9 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary font-mono" 
+                className="w-full bg-base border border-border rounded-lg pl-3.5 pr-10 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary font-mono font-medium transition-colors" 
               />
-              <UserCheck size={16} className="absolute right-3 top-2.5 text-muted-foreground" />
+              <UserCheck size={18} className="absolute right-3.5 top-3 text-muted-foreground" />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Secure Password</label>
+            <label className="block text-xs font-extrabold text-muted-foreground uppercase tracking-wider mb-2">Secure Password</label>
             <div className="relative">
               <input 
                 type="password" 
@@ -138,27 +101,40 @@ export function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••••••"
-                className="w-full bg-base border border-border rounded pl-3 pr-9 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
+                className="w-full bg-base border border-border rounded-lg pl-3.5 pr-10 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors font-medium" 
               />
-              <Lock size={16} className="absolute right-3 top-2.5 text-muted-foreground" />
+              <Lock size={18} className="absolute right-3.5 top-3 text-muted-foreground" />
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1 font-mono">Default seed credentials: password123</p>
           </div>
 
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm py-2.5 rounded shadow-sm transition-colors mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-extrabold text-sm py-3 rounded-lg shadow-md hover:shadow-primary/20 transition-all mt-3 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98]"
           >
-            {isLoading ? 'Verifying with Atlas Cloud...' : 'Authenticate & Enter Portal'}
-            {!isLoading && <ArrowRight size={16} />}
+            {isLoading ? (
+              <span>Verifying with Atlas Cloud...</span>
+            ) : (
+              <>
+                <span>Authenticate & Enter Portal</span>
+                <ArrowRight size={17} />
+              </>
+            )}
           </button>
         </form>
 
-        <div className="bg-secondary/30 p-4 text-center border-t border-border flex justify-between items-center px-6">
-          <span className="text-[10px] text-muted-foreground font-semibold">GVMC & POLICE CCC INTERLOCK</span>
-          <span className="text-[10px] text-accent font-bold">LIVE DB: CONNECTED</span>
+        <div className="bg-secondary/40 p-4 text-center border-t border-border/70 flex flex-col sm:flex-row justify-between items-center px-7 gap-2">
+          <span className="text-[11px] text-muted-foreground font-extrabold tracking-wide">GVMC & POLICE INTERLOCK</span>
+          <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-bold font-mono">
+            <CheckCircle2 size={13} /> ATLAS LIVE DB
+          </span>
         </div>
+      </div>
+      
+      <div className="mt-5 text-center">
+        <Link to="/public" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors underline underline-offset-4">
+          Are you a citizen? Switch to the Public Incident Reporting Portal
+        </Link>
       </div>
     </div>
   );
